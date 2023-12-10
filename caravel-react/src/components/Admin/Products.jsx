@@ -25,7 +25,11 @@ const Products = () => {
     pdesc: "",
     pcat: "",
     pdiscount: "",
+    pimage: null
   });
+  const changeImage = (e) =>{
+    setVar({...vars, [e.target.name]: e.target.files[0]});
+  }
   const [total, setTotal] = useState(0);
 
   const [cats, setCat] = useState({
@@ -46,7 +50,12 @@ const Products = () => {
       try{
         axios.post("http://127.0.0.1:8000/api/add_product", userdata).then((response)=>{
           if(response.data.status===true){
-            navigate("/dashboard/view_products");
+            const data = new FormData();
+            data.append('image', vars.pimage);
+            data.append("id", response.data.id);
+            axios.post("http://127.0.0.1:8000/api/add_product_image", data).then((res)=>{
+              navigate("/dashboard/view_products");
+            })
             // setRedirect(true);
           }
         }) 
@@ -133,7 +142,7 @@ const Products = () => {
     </div>
 </div> 
 
-    <form className="w-full max-w-xxl" onSubmit={(e)=>{submitProduct(e)}}>
+    <form className="w-full max-w-xxl" onSubmit={(e)=>{submitProduct(e)}} >
       <p className='text-xl font-bold mb-5'>Add a Product</p>
   <div className="flex flex-wrap -mx-3 mb-6">
     <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
@@ -168,7 +177,7 @@ const Products = () => {
       <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">
        Upload Image
       </label>
-      <input type="file" name='pquant' onInput={(e)=>{changeField(e)}} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" />
+      <input type="file" name='pimage' onInput={(e)=>{changeImage(e)}} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" />
     </div>
   </div>
   <div className="flex flex-wrap -mx-3 mb-2">

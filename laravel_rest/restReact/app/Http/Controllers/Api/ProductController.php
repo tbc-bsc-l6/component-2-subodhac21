@@ -20,16 +20,29 @@ class ProductController extends Controller
             'category_id'=>$request->pcat,
             'discount_id'=>$request->pdiscount
         ];
-        $id = $result = Product::create($data);
+        $result = $result = Product::create($data);
         if($result){
             return response([
-                'status'=> true
+                'status'=> true,
+                'id' => $result->id
             ]);
         }
         return response([
             'status'=> false
         ]);
 
+    }
+    public function add_product_image(Request $request){
+        if($request->has('image')){
+            $image = $request->file('image');
+            $name = time(). '.'. $image->getClientOriginalExtension();
+            $image->move('images/', $name);
+            $id = $request->id;
+            Product::where("id",$id)->update(['image'=>$name]);
+            return response([
+                'status'=>true
+            ]);
+        }
     }
     public function get_products(){
         $arr = Product::orderBy("id", "desc")->get()->toArray();

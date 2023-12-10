@@ -37,6 +37,8 @@ Route::post("/authme", [UserController::class, 'authMe']);
 //products routes
 
 Route::post("/add_product", [ProductController::class, "add_product"]);
+Route::post("/add_product_image", [ProductController::class, "add_product_image"]);
+
 Route::put("/update_product", [ProductController::class, "update_product"]);
 
 Route::delete("/delete_product/{id}", [ProductController::class, "delete_product"]);

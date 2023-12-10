@@ -8,7 +8,8 @@ const initialState = {
         description: "",
         category: "",
         discount: "",
-        created_at: ""
+        created_at: "",
+        image: ""
     }],
     filter: [{
         name: "",

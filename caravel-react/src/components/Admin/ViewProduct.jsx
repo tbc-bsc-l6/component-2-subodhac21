@@ -51,6 +51,7 @@ const ViewProduct = () => {
 
     useEffect(()=>{
         axios.get("http://127.0.0.1:8000/api/get_products").then((response)=>{
+            console.log(response);
             dispatch(add_pro(response.data.arr));
             
         })
@@ -80,12 +81,12 @@ const ViewProduct = () => {
       <h1 className='text-xl font-weight mb-0'>View products</h1>
       <div className='flex md:flex-row flex-col md:mt-0 mt-4 items-baseline justify-between gap-5'>
 
-<button onClick={(e)=>{dropdown(e)}} id="dropdownDelayButton" data-dropdown-toggle="dropdownDelay" data-dropdown-delay="500" data-dropdown-trigger="hover" className="text-white bg-blue-500 hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Filter <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+<button onClick={(e)=>{dropdown(e)}} id="dropdownDelayButton" data-dropdown-toggle="dropdownDelay" data-dropdown-delay="500" data-dropdown-trigger="hover" className="text-white bg-blue-500 hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Filter <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4"/>
 </svg>
 </button>
 
-<div id="dropdownDelay" class={`z-10 ${dropDown===true ? "block" : "hidden"} absolute mt-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
+<div id="dropdownDelay" className={`z-10 ${dropDown===true ? "block" : "hidden"} absolute mt-12 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
       <li>
         <a onClick={()=>{filterAsc()}} href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ascending</a>
@@ -112,6 +113,9 @@ const ViewProduct = () => {
                     Product name
                 </th>
                 <th scope="col" className="px-6 py-3">
+                    Product Image
+                </th>
+                <th scope="col" className="px-6 py-3">
                     Product Quantity
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -132,9 +136,8 @@ const ViewProduct = () => {
             </tr>
         </thead>
         <tbody>
-           <tr className={itemPro.length === 0 ? 'block': 'hidden'}>No Searches Found</tr>
+           <tr className={itemPro.length === 0 ? 'block': 'hidden'}><td>No Searches Found</td></tr>
     {
-        
         
         itemPro.map((pro, id)=>{
             
@@ -146,6 +149,9 @@ const ViewProduct = () => {
                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {pro.name}
                     </th>
+                    <td className="px-6 py-4">
+                        <img className='w-16 h-16' src={`http://127.0.0.1:8000/images/${pro.image}`} alt="Not available" />
+                    </td>
                     <td className="px-6 py-4">
                         {pro.quantity}
                     </td>
