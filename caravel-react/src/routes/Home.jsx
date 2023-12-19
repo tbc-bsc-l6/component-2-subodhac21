@@ -15,7 +15,7 @@ const Home = () => {
     <Navbar/>
     <Main_body/>
     <Newproducts/>
-    <TrendProducts/>
+    {/* <TrendProducts/> */}
 
     <Footer/>
     </div>

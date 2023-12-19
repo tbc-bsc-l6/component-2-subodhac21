@@ -19,6 +19,9 @@ import Products from './components/Admin/Products';
 import AdminLoginpage from './components/Admin/AdminLoginpage';
 import ViewProduct from './components/Admin/ViewProduct';
 import EditProduct from './components/Admin/EditProduct';
+import Product_detail from './components/frontend/Product_detail';
+import Detail from './routes/Detail';
+import CartPage from './routes/CartPage';
 
 
 const App = () => {
@@ -36,22 +39,22 @@ const App = () => {
   useEffect(()=>{
     if(tokenInfilestorage != ""){
   let url = "http://127.0.0.1:8000/api/authme";
-
       let token = tokenInfilestorage;
       let userData= {
         "token": token
       };
       try{
-        const data = axios.post(url, userData).then((response) => {
+        const data = axios.post(url, userData, { headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },}).then((response) => {
           // console.log(response.data.user[0].fullname);
           if(response.data.status==='true'){
             if(response.data.type==='customer'){
-              dispatch(loginUser({fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "customer"}));
+              dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "customer"}));
               setIsLogin(true); 
             }
             else if(response.data.type==='admin')
-              dispatch(loginUser({fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "admin"}));
-         
+              dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "admin"}));
           }
           setLoading(false);
           
@@ -82,12 +85,16 @@ const App = () => {
       {/* <Route path='/products' element={<Products/>}/> */}
 
       <Route path='/signup' element={<SignUp/>} />
+      <Route path='/cartpage' element={<CartPage/>} />
+
       <Route path='/cart' element={<Cart/>}/>
       <Route path='/signin' element={<SignIn isLogin={isLogin}/>}/>
       <Route path='/about-us' element={<AboutUs/>}/>
 
       <Route path='/user-profile' element={<UserProfile/>}></Route>
       <Route path='/fpass' element={<FPass/>}></Route>
+      <Route path='/product_detail/:id' element={<Detail/>}></Route>
+
       <Route path='/dashboard' element={<Dashboard/>}>
         <Route index element={<AdminPage/>}/>
         <Route path='products' element={<Products/>}/>

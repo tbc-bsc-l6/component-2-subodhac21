@@ -13,7 +13,7 @@ const UserProfilePage = () => {
   const logout = () =>{
    
     localStorage.setItem("loginItem", "");
-    dispatch(logoutUser({fullname: "", email: "", token: "", image: "", type: ""}));
+    dispatch(logoutUser({id: "", fullname: "", email: "", token: "", image: "", type: ""}));
 
     nav("/");
   }
@@ -21,7 +21,6 @@ const UserProfilePage = () => {
     return state.authReducer.signin[0];
 })
   return (
-
     <div>
       <div className='flex w-100 items-center justify-center flex-col gap-4 mt-16 mb-16'>
         <button className='border bg-blue-400 text-white bottom-2 p-3' type='button' onClick={logout}>Logout</button>

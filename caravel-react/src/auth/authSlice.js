@@ -2,12 +2,14 @@ import {createSlice, nanoid} from "@reduxjs/toolkit";
 
 const initialState = {
     signin: [{
+        id: "",
         fullname: "",
         email: "",
         token: "",
         image: "",
         type: ""
     }, {
+        id: "",
         fullname: "",
         email: "",
         token: "",

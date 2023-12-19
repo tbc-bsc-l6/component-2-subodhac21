@@ -175,9 +175,6 @@ const ViewProduct = () => {
                 </tr>
                             );
                         })
-
-
-                    
                     }
         </tbody>
     </table>

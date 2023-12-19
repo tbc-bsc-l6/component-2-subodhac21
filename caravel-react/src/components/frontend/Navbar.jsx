@@ -17,9 +17,22 @@ import { loginUser } from '../../auth/authSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch();
+  const [alert, setAlert] = useState(false);
   let isLogin = useSelector((state)=>{
     return state.authReducer.signin[0];
   })
+  let cartItems = useSelector((state)=>{
+    return state.productReducer.cart_items;
+  })
+  // console.log(cartItems[0].items);
+  useEffect(()=>{
+    if(cartItems[0].items>0){
+      setAlert(true);
+    }
+    setTimeout(()=>{
+      setAlert(false);
+    },4000)
+  },[cartItems[0].items])
   // console.log(isLogin);
   // useEffect(()=>{
   //   let tokenInfilestorage = localStorage.getItem("loginItem");
@@ -63,6 +76,15 @@ const Navbar = () => {
  
   return (
     <>
+    <div className={`${alert == true ? "flex" : "hidden"} z-20 fixed right-0 top-24 items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400`} role="alert">
+  <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+  </svg>
+  <span className="sr-only">Info</span>
+  <div>
+    <span className="font-medium"></span> {cartItems[0].items} item(s) has been added to the cart
+  </div>
+</div>
     <header onClick={()=>setCat((prev)=>{false})} className={`w-full text-white bg-[#0f172a] h-[auto] flex justify-center items-center p-4 z-10`}>
       <nav className='lg:w-[94%] w-[100%] flex justify-between items-center m-auto z-0'>
         <div className='w-12 h-12'>
@@ -101,7 +123,7 @@ const Navbar = () => {
           </Link> : <Link className='w-[40px] hover:text-red-500 duration-[0.6s] rounded-full' to="/user-profile">
               <img className='w-[38px] h-[38px] rounded-full' src={`http://127.0.0.1:8000/assets/${isLogin.image}`} alt="" />
               </Link>  }
-          <Link className='hover:text-red-500 duration-[0.6s]' to="/cart-page"><FontAwesomeIcon className='text-[1.5rem]' icon={faCartPlus} /><span className='rounded text-[16px] text-[red]'>4</span></Link>
+          <Link className='hover:text-red-500 duration-[0.6s]' to="/cartpage"><FontAwesomeIcon className='text-[1.5rem]' icon={faCartPlus} /><span className='rounded text-[16px] text-[red]'>{cartItems[0].items}</span></Link>
           <div onClick={()=>{modalPlay()}} className='p-2 md:p-0 bg-white md:bg-black rounded-md md:static right-5 text-white -z-10 md:z-0 md:text-white top-[6em] absolute'>
             <p className='hover:text-red-500 md:text-white text-black' to="/cartpage"><FontAwesomeIcon className='text-[1.5rem]' icon={faMagnifyingGlass} /></p>
           </div>

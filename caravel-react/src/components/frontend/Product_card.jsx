@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Product_card = () => {
+const Product_card = (props) => {
   return (
     <div className='w-[250px] mb-12'>
-      <a href="#" className="group relative block overflow-hidden">
+      <div className="group relative block overflow-hidden">
   <button
     className="absolute end-4 top-4 z-10 rounded-full bg-white p-1 text-gray-900 transition hover:text-gray-900/75"
   >
@@ -25,11 +26,11 @@ const Product_card = () => {
     </svg>
   </button>
 
-  <img
-    src="https://images.unsplash.com/photo-1599481238640-4c1288750d7a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2664&q=80"
+  <Link to={`/product_detail/${props.id}`} ><img
+    src={`http://127.0.0.1:8000/images/${props.image}`}
     alt=""
     className="h-50 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-50"
-  />
+  /></Link>
 
   <div className="relative border border-gray-100 bg-white p-6">
     <span
@@ -38,9 +39,9 @@ const Product_card = () => {
       New
     </span>
 
-    <h3 className="mt-4 text-lg font-medium text-gray-900">Robot Toy</h3>
+    <h3 className="mt-4 text-lg font-medium text-gray-900">{props.name}</h3>
 
-    <p className="mt-1.5 text-sm text-gray-700">$14.99</p>
+    <p className="mt-1.5 text-sm text-gray-700">Rs: {props.price} /-</p>
 
     <form className="mt-4">
       <button
@@ -50,7 +51,7 @@ const Product_card = () => {
       </button>
     </form>
   </div>
-</a>
+</div>
 
     </div>
   )

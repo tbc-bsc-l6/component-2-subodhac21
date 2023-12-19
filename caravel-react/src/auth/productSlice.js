@@ -19,6 +19,9 @@ const initialState = {
         category: "",
         discount: "",
         created_at: ""
+    }],
+    cart_items: [{
+        items: 0,
     }]
 }
 
@@ -48,10 +51,13 @@ export const productsSlice = createSlice({
                 return st.name.indexOf(action.value);
             })
             state.filter = arr;
+        },
+        add_cart: (state, action) =>{
+            state.cart_items[0].items = action.payload.items;
         }
     }
 });
 
-export const {add_pro, delete_pro, update_pro, filter_pro} = productsSlice.actions;
+export const {add_pro, delete_pro, update_pro, filter_pro, add_cart} = productsSlice.actions;
 
 export default productsSlice.reducer;

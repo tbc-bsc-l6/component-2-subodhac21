@@ -22,13 +22,24 @@ const EditProduct = () => {
     pdesc: "",
     pcat: "",
     pdiscount: "",
+    pimage: null,
   });
+
+  console.log(vars);
+
+  const [image, setImage] = useState(null);
+  console.log(image);
+  const changeImage = (e) =>{
+    setImage(e.target.files[0]);
+  }
     useEffect(()=>{
       let isMounted = true;
       async function get_single_product_only(){
         if(id != null){
           try {
-            const response = await axios.post("http://127.0.0.1:8000/api/get_single_product", { id: id });
+            const response = await axios.post("http://127.0.0.1:8000/api/get_single_product", { id: id }, { headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },});
             if (isMounted) {
               // Update state or refs only if the component is still mounted
               setVar({
@@ -37,7 +48,8 @@ const EditProduct = () => {
                 pquant: response.data.product.quantity,
                 pdesc: response.data.product.description,
                 pcat: response.data.product.category_id,
-                pdiscount: response.data.product.discount_id
+                pdiscount: response.data.product.discount_id,
+                pimage: response.data.product.image
               });
             }
           } catch (error) {
@@ -63,31 +75,30 @@ const EditProduct = () => {
   const [updateCat, setUpdateCat] = useState(false);
   // const [redirect, setRedirect] = useState(false);
 
+ 
+
   const submitProduct = (e) =>{
     e.preventDefault();
     if(vars.pname != "" && vars.pprice != "" && vars.pquant != "" && vars.pdesc != "" && vars.pcat != "" && vars.pdiscount != ""){
-      const userdata = {
-        pname: vars.pname,
-        pprice: vars.pprice,
-        pquant: vars.pquant,
-        pdesc: vars.pdesc,
-        pcat: vars.pcat,
-        pdiscount: vars.pdiscount,
-        pid: id
-      };
-      try{
-        axios.put("http://127.0.0.1:8000/api/update_product", userdata).then((response)=>{
-          if(response.data.status===true){
-            navigate("/dashboard/view_products");
-            // setRedirect(true);
-          }
+      let userdata = new FormData();
+      userdata.append('pname', vars.pname);
+      userdata.append('pprice', vars.pprice);
+      userdata.append('pquant', vars.pquant);
+      userdata.append('pdesc', vars.pdesc);
+      userdata.append('pcat', vars.pcat);
+      userdata.append('pdiscount', vars.pdiscount);
+      userdata.append('pid', id);
+      userdata.append('pimage', image ? image : "");
+      // console.log(userdata);
+      // try{
+        axios.post("http://127.0.0.1:8000/api/update_product", userdata, { headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },}).then((response)=>{
+          // if(response.data.status===true){
+            console.log(response);
+                navigate("/dashboard/view_products");
+           
         }) 
-      }
-      catch(e){
-        console.log(e);
-      }
-
-      
     }
 
   }
@@ -137,6 +148,9 @@ const EditProduct = () => {
     }
     
   }
+
+
+
   useEffect(()=>{
     if(!isNaN(vars.pprice) && !isNaN(vars.pquant)){
       setTotal(Number(vars.pprice)* Number(vars.pquant));
@@ -146,7 +160,7 @@ const EditProduct = () => {
     setCat({...cats, [e.target.name]: e.target.value})
   }
   return (
-    id===null ? <Navigate to="/dashboard/view_products"/> : vars.pname === "" ? <Loader type={'three'}/> : <><div>
+    id===null ? <Navigate to="/dashboard/view_products"/> : vars.pcat === "" ? <Loader type={'three'}/> : <><div>
     <div className='w-100'>
     <div onClick={()=>setCatModal(false)} className={`${catmodal==false? 'hidden': "block"} w-screen top-0 left-0 fixed h-screen z-20 inset-0 bg-gray-500 bg-opacity-75 transition-opacity`}></div>
 
@@ -218,7 +232,8 @@ const EditProduct = () => {
       <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-password">
        Upload Image
       </label>
-      <input type="file" name='pquant' onInput={(e)=>{changeField(e)}} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" />
+      <input type="file" name='pimage' onInput={(e)=>{changeImage(e)}} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" />
+      <img className={`${vars.pimage != "" ?"w-12" : "w-32"} h-12 mt-4`} src={`{http://127.0.0.1:8000/images/${vars.pimage}`} alt="No image available" />
     </div>
   </div>
   <div className="flex flex-wrap -mx-3 mb-2">
@@ -259,7 +274,7 @@ const EditProduct = () => {
       <input  value={vars.pdiscount || ""} onChange={(e)=>{changeField(e)}} name='pdiscount' className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" placeholder="9" />
     </div>
     <div className='w-full md:w-1/3 px-3 mb-6 md:mb-0 mt-8'>
-      <button type='submit' className='border border-black bg-[#14B8A6] hover:opacity-[0.8] hover:transition-all text-white px-8 py-2'>Add</button>
+      <button type='submit' className='border border-black bg-[#14B8A6] hover:opacity-[0.8] hover:transition-all text-white px-8 py-2'>Update</button>
     </div>
   </div>
 </form>
