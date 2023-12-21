@@ -1,42 +1,71 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux';
-import { add_cart } from '../../auth/productSlice';
+import { add_cart, add_message } from '../../auth/productSlice';
 import { add_cart_item } from '../../auth/productSlice';
+import Loader from './Loader';
 
 
 const Product_card = (props) => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
   const userLogin = useSelector((state)=>{
     return state.authReducer.signin[0];
   })
+  const mess = useSelector((state)=>{
+    return state.productReducer.message;
+  })
   let cartToken = localStorage.getItem('cartItem');
   const addToCart = (e) =>{
     e.preventDefault();
+    setLoading(true);
+    dispatch(add_message({mess: "adding"}));
     if(userLogin.fullname != ""){
-        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: props.id, quantity: 1, cust_id: userLogin.id}).then((response)=>{
+        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: props.id, quantity: 1, cust_id: userLogin.id, add: "one"}).then((response)=>{
+          if(response.data.repeat == true){
+            setLoading(false);
+            dispatch(add_message({mess: "added_success"}));
+          }
+          else{
+            setLoading(false);
             dispatch(add_cart({'items': 1}));
-            dispatch(add_cart_item({'items':[response.data.result[0]]}));
+            dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
             // nav("/cartpage");
-            
+            dispatch(add_message({mess: "added_success"}));
+
+          }
         })
     }
     else{
-        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: props.id, quantity: 1, token: cartToken}).then((response)=>{
+        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: props.id, quantity: 1, token: cartToken, add: "one"}).then((response)=>{
           console.log(response);
-            // setUserInfo();
+          if(response.data.repeat == true){
+            setLoading(false);
+            dispatch(add_message({mess: "added_success"}));
+
+
+          }
+          else{
+            dispatch(add_message({mess: "added_success"}));
+            setLoading(false);
             let token = response.data.token;
             localStorage.setItem('cartItem', token);
             dispatch(add_cart({'items': 1}));
-            dispatch(add_cart_item({'items':[response.data.result[0]]}));
+            // dispatch(add_cart_item({'items':[response.data.result[0]]}));
+            dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
+          }
+            // setUserInfo();
+           
+
             // nav("/cartpage");
         })
     }
 
 }
   return (
+   <>
     <div className='w-[250px] mb-12'>
       <div className="group relative block overflow-hidden">
   <button
@@ -88,6 +117,7 @@ const Product_card = (props) => {
 </div>
 
     </div>
+    </>
   )
 }
 

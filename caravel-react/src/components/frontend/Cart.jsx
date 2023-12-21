@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { add_cart_item } from '../../auth/productSlice';
+import { add_cart_item, delete_cart_item } from '../../auth/productSlice';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -13,27 +13,56 @@ const token = localStorage.getItem("cartItem");
 const cartItems = useSelector((state)=>{
   return state.productReducer.cart_products;
 })
+console.log(cartItems);
 useEffect(()=>{
   if(cartItems.length > 0){
     setProducts(cartItems);
   }
-  else{
+  
   if(userLogin.id != ""){
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_id", {id: userLogin.id}).then((response)=>{
       console.log(response);
-      dispatch(add_cart_item({'items': response.data.product}));
-      setProducts(response.data.product);
+      if(cartItems.length != response.data.product.length){
+        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+      }
+      // setProducts(response.data.product);
     })
   }
   else{
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_token", {token: token}).then((response)=>{
-      console.log(response);
-    dispatch(add_cart_item({'items': response.data.product}));
-      setProducts(response.data.product);
+      console.log(response.data.cart_pr);
+      // setProducts(response.data.product);
+      if(cartItems.length != response.data.product.length){
+        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+      }
+
     })
-  }}
+  }
 },[])
 
+
+const remove_item = (e) =>{
+  let id = e.currentTarget.dataset.id;
+  console.log(id);
+  if(userLogin.id != ""){
+    dispatch(delete_cart_item({'id': id}));
+  axios.delete("http://127.0.0.1:8000/api/delete_cart_pro_byuser/"+id).then((response)=>{
+    console.log(response);
+      if(response.data.status = true){
+      }
+  })
+  }
+  else{
+    dispatch(delete_cart_item({'id': id}));
+  axios.delete("http://127.0.0.1:8000/api/delete_products_from_token/"+id).then((response)=>{
+    console.log(response);
+  if(response.data.status = true){
+
+    }
+  })
+  }
+
+}
 
   return (
     <>
@@ -42,7 +71,7 @@ useEffect(()=>{
 <h2 className="mb-10 text-4xl font-bold text-center dark:text-gray-400">Your Cart</h2>
 <div className="px-6 mb-10 lg:px-0">
 
-  {products.map((product)=>{
+  {cartItems.map((product)=>{
       return (
               <div key={product.id} className="relative flex flex-wrap items-center pb-8 mb-8 -mx-4 border-b border-gray-200 dark:border-gray-500 xl:justify-between border-opacity-40">
               <div className="w-full mb-4 md:mb-0 h-96 md:h-44 md:w-56">
@@ -88,7 +117,7 @@ useEffect(()=>{
               <span>{product.price}</span>
               </span>
               </div>
-              <button className="absolute top-0 right-0 text-gray-400 lg:mt-6 lg:-mr-4 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200">
+              <button data-id={product.temp_id} onClick={(e)=> remove_item(e)} className="absolute top-0 right-0 text-gray-400 lg:mt-6 lg:-mr-4 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="w-6 h-6 bi bi-x-circle" viewBox="0 0 16 16">
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
               <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>

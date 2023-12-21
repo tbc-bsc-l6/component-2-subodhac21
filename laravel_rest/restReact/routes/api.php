@@ -54,6 +54,10 @@ Route::post("/products_from_cart_by_token", [ProductController::class, "products
 Route::post("/products_num_cart_by_id", [ProductController::class, "products_num_cart_by_id"]);
 Route::post("/products_num_cart_by_token", [ProductController::class, "products_num_cart_by_token"]);
 
+Route::delete("/delete_cart_pro_byuser/{id}", [ProductController::class, "delete_cart_pro_byuser"]);
+Route::delete("/delete_products_from_token/{id}", [ProductController::class, "delete_products_from_token"]);
+
+
 
 
 //get categories

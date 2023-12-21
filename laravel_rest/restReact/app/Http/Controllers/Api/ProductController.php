@@ -102,46 +102,72 @@ class ProductController extends Controller
         $pro_id = $request->pro_id;
         $quantity = $request->quantity;
         $customer_id = $request->cust_id;
+        $add = $request->add;
         if(count(Tempcart::where(['product_id'=> $pro_id, 'user_id'=> $customer_id])->get()->toArray())>0){
-            Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->update(['quantity'=> $quantity]);
-            $result = Product::where(['id', $pro_id])->get()->toArray();
-            return response(['status'=> true, 'userid'=> $customer_id, 'result'=> $result]);
+            if($add != "one"){
+                Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->update(['quantity'=> $quantity]);     
+                $result = Product::where(['id', $pro_id])->get()->toArray();
+                $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->get()->toArray();
+                $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
+                return response(['repeat'=> false, 'status'=> true, 'userid'=> $customer_id, 'result'=> $result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
+            }
+            else{
+                return response(['repeat'=> true, 'status'=> true, 'userid'=> $customer_id, 'result'=> $result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
+            }
+           
         }
         else if(count(Tempcart::where(['user_id'=> $customer_id])->get()->toArray())>0){
             Tempcart::create(['product_id'=>$pro_id, 'user_id'=>$customer_id, 'quantity'=>$quantity]);
             $result = Product::where(['id', $pro_id])->get()->toArray();
-            return response(['status'=>true, 'userid'=> $customer_id ,'result'=>$result]);
+            $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id, 'quantity'=> $quantity])->get()->toArray();
+            $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
+
+            return response(['repeat'=> false, 'status'=>true, 'userid'=> $customer_id ,'result'=>$result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
         }
         else{
             Tempcart::create(['product_id'=> $pro_id, 'user_id'=> $customer_id, 'quantity'=> $quantity, 'cookie_string'=> "0"]);
             $result = Product::where(['id', $pro_id])->get()->toArray();
+            $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id, 'quantity'=> $quantity, 'cookie_string'=>'0'])->get()->toArray();
+            $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
 
-            return response(['status'=>true, 'userid'=> $customer_id, 'result'=> $result]);
+            return response(['repeat'=> false,'status'=>true, 'userid'=> $customer_id, 'result'=> $result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
         }
     }
     public function add_product_to_cart_nameless(Request $request){
         $pro_id = $request->pro_id;
         $quantity = $request->quantity;
         $cookie_token = $request->token;
-        if(count(Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->get()->toArray())>0){
-            Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->update(['quantity'=> $quantity]);
-            $result = Product::where('id', $pro_id)->get()->toArray();
+        $add = $request->add;
 
-            return response(['status'=> true, 'token'=> $cookie_token ,'result'=>$result]);
+        if(count(Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->get()->toArray())>0){
+            if($add != "one"){
+                Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->update(['quantity'=> $quantity]);
+                $result = Product::where('id', $pro_id)->get()->toArray();
+                $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'cookie_string'=> $cookie_token])->get()->toArray();
+                $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
+                return response(['repeat'=> false, 'status'=> true, 'token'=> $cookie_token ,'result'=>$result , 'cart_pr'=> $cart_pro, 'category'=> $category]);
+            }
+            else{
+                return response(['repeat'=> true, 'status'=> true, 'token'=> $cookie_token]);
+            }
         }
         else if(count(Tempcart::where(['cookie_string'=> $cookie_token])->get()->toArray())>0){
             Tempcart::create(['product_id'=>$pro_id, 'user_id'=>'0', 'quantity'=>$quantity, 'cookie_string'=>$cookie_token]);
             $result = Product::where('id', $pro_id)->get()->toArray();
+            $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'cookie_string'=> $cookie_token, 'user_id'=> '0', 'quantity'=> $quantity])->get()->toArray();
+            $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
 
-            return response(['status'=>true, 'token'=> $cookie_token ,'result'=>$result]);
+            return response(['repeat'=> false, 'status'=>true, 'token'=> $cookie_token ,'result'=>$result , 'cart_pr'=> $cart_pro, 'category'=> $category]);
         }
         else{
             $token = Str::random(40); 
             $hashedToken = hash('sha1', $token);
             Tempcart::create(['product_id'=> $pro_id, 'user_id'=> '0', 'quantity'=> $quantity, 'cookie_string'=> $hashedToken]);
             $result = Product::where('id', $pro_id)->get()->toArray();
+            $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'cookie_string'=> $hashedToken, 'user_id'=> '0', 'quantity'=> $quantity])->get()->toArray();
+            $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
 
-            return response(['status'=>true, 'token'=> $hashedToken, 'result'=> $result]);
+            return response(['repeat'=> false, 'status'=>true, 'token'=> $hashedToken, 'result'=> $result , 'cart_pr'=> $cart_pro, 'category'=> $category]);
         }
     }
 
@@ -160,22 +186,36 @@ class ProductController extends Controller
     public function products_from_cart_by_id(Request $request){
         $id = $request->id;
         $products = Tempcart::where('user_id', $id)->get();
+        $cart_pr = $products->toArray();
         $pro = array();
+        $category = array();
         foreach($products as $key => $product){
             $pro[$key] = $product->cartProducts->toArray();
+            $category[$key] = $product->cartProducts->get_category->toArray();
         }
         
-        return response(['product'=> $pro]);
+        return response(['product'=> $pro, 'cart_pr'=> $cart_pr, 'category'=> $category]);
     }
 
     public function products_from_cart_by_token(Request $request){
         $token = $request->token;
         $products = Tempcart::where('cookie_string', $token)->get();
         $pro = array();
+        $cart_pr = $products->toArray();
+        $category = array();
         foreach($products as $key => $product){
             $pro[$key] = $product->cartProducts->toArray();
+            $category[$key] = $product->cartProducts->get_category->toArray();;
         }
         
-        return response(['product'=> $pro]);
+        return response(['product'=> $pro, 'cart_pr'=> $cart_pr , 'category'=> $category]);
+    }
+    public function delete_cart_pro_byuser(Request $request, $id){
+        $result = Tempcart::where('id', $id)->delete();
+        return response(['status'=> $result]);
+    }
+    public function delete_products_from_token(Request $request, $id){
+        $result = Tempcart::where('id', $id)->delete();
+        return response(['status'=> $result]);
     }
 }

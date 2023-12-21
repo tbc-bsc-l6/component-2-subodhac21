@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { add_cart_item } from '../../auth/productSlice';
+import { add_cart_item, delete_cart_item } from '../../auth/productSlice';
 
 const SideCart = ({setsidebar, status}) => {
   const dispatch = useDispatch();
@@ -18,31 +18,56 @@ const SideCart = ({setsidebar, status}) => {
     const cartItems = useSelector((state)=>{
       return state.productReducer.cart_products;
     })
+ 
     useEffect(()=>{
       if(cartItems.length > 0){
         setProducts(cartItems);
       }
-      else{
+      
         if(userLogin.id != ""){
           axios.post("http://127.0.0.1:8000/api/products_from_cart_by_id", {id: userLogin.id}).then((response)=>{
             console.log(response);
-            setProducts(response.data.product);
-            dispatch(add_cart_item({'items': response.data.product}));
+            // setProducts(response.data.product);
+            if(cartItems.length != response.data.product.length){
+              dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+            }
           })
         }
         else{
           axios.post("http://127.0.0.1:8000/api/products_from_cart_by_token", {token: token}).then((response)=>{
             console.log(response);
-            setProducts(response.data.product);
-            dispatch(add_cart_item({'items':response.data.product}));
-
+            // setProducts(response.data.product);
+            if(cartItems.length != response.data.product.length){
+              dispatch(add_cart_item({'items':response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+            }
           })
-        }
+        
       }
      
     },[])
 
+    const remove_item = (e) =>{
+      let id = e.target.dataset.id;
+      console.log(id);
+      if(userLogin.id != ""){
+        dispatch(delete_cart_item({'id': id}));
+      axios.delete("http://127.0.0.1:8000/api/delete_cart_pro_byuser/"+id).then((response)=>{
+        console.log(response);
+          if(response.data.status = true){
+          }
+      })
+      }
+      else{
+        dispatch(delete_cart_item({'id': id}));
+      axios.delete("http://127.0.0.1:8000/api/delete_products_from_token/"+id).then((response)=>{
+        console.log(response);
+      if(response.data.status = true){
 
+        }
+      })
+      }
+
+    }
   return (
     <div>
       <div className="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
@@ -71,7 +96,7 @@ const SideCart = ({setsidebar, status}) => {
               <div className="mt-8">
                 <div className="flow-root">
                   <ul role="list" className="-my-6 divide-y divide-gray-200">
-                   { products.map((pro)=>{
+                   { cartItems.map((pro)=>{
                     return (
                         <li key={pro.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -86,13 +111,14 @@ const SideCart = ({setsidebar, status}) => {
                               </h3>
                               <p className="ml-4">{pro.price}</p>
                             </div>
-                            <p className="mt-1 text-sm text-gray-500">Accessory</p>
+                            <p className="mt-1 text-sm text-gray-500">{pro.catname
+                            }</p>
                           </div>
                           <div className="flex flex-1 items-end justify-between text-sm">
-                            <p className="text-gray-500">Qty 1</p>
+                            <p className="text-gray-500">Qty {pro.quantity}</p>
   
                             <div className="flex">
-                              <button type="button" className="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                           <button data-id={pro.temp_id} onClick={(e)=> remove_item(e)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
                             </div>
                           </div>
                         </div>
