@@ -7,13 +7,13 @@ import AboutUsPage from '../components/frontend/AboutUsPage'
 const AboutUs = () => {
    
   return (
-    <div className='font-[poppins] h-screen'>
-    <div>
-      <Navbar/>
+    // <div className='font-[poppins] h-screen'>
+    // <div>
+    //   <Navbar/>
         <AboutUsPage/>
-      <Footer/>
-    </div>
-    </div>
+    //   <Footer/>
+    // </div>
+    // </div>
   )
 }
 

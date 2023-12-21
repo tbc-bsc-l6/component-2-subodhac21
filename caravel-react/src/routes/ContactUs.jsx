@@ -5,11 +5,11 @@ import ContactUsPage from '../components/frontend/ContactUsPage'
 const ContactUs = () => {
   return (
     <>
-     <div className='font-[poppins] h-screen'>
-    <Navbar/>
+     {/* <div className='font-[poppins] h-screen'>
+    <Navbar/> */}
       <ContactUsPage/>
-    <Footer/>
-    </div>
+    {/* <Footer/>
+    </div> */}
     </>
   )
 }

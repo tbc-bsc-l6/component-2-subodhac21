@@ -10,11 +10,11 @@ const UserProfile = () => {
   })
   return (
     isLogin.token === ""? <Navigate to="/" />:
-    <div className='font-[poppins] h-screen'>
-    <Navbar/>
+    // <div className='font-[poppins] h-screen'>
+    // <Navbar/>
     <UserProfilePage/>
-    <Footer/>
-    </div>
+    // <Footer/>
+    // </div>
   )
 }
 

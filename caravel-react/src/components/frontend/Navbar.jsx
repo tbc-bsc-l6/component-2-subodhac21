@@ -10,20 +10,41 @@ import {faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
 import logo from "../../assets/images/logo.png";
 import Modal from './Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import Axios from 'axios';
+import axios from 'axios';
 import { loginUser } from '../../auth/authSlice';
+import  base_url from '../../auth/baseurl';
 
 
-
-const Navbar = () => {
+const Navbar = ({setsidebar}) => {
+  const [quantity, setQuantity] = useState(0);
+    const userLogin = useSelector((state)=>{
+      return state.authReducer.signin[0];
+  })
+  const token = localStorage.getItem("cartItem");
+  let cartItems = useSelector((state)=>{
+    return state.productReducer.cart_items;
+  })
+  useEffect(()=>{
+    if(userLogin.id != ""){
+      axios.post(base_url+"products_num_cart_by_id", {id: userLogin.id}).then((response)=>{
+        console.log(response);
+        setQuantity(response.data.num);
+      })
+    }
+    else{
+      axios.post(base_url+"products_num_cart_by_token", {token: token}).then((response)=>{
+        console.log(response);
+        setQuantity(response.data.num);
+      })
+    }
+  },[cartItems[0].items])
+  
   const dispatch = useDispatch();
   const [alert, setAlert] = useState(false);
   let isLogin = useSelector((state)=>{
     return state.authReducer.signin[0];
   })
-  let cartItems = useSelector((state)=>{
-    return state.productReducer.cart_items;
-  })
+  
   // console.log(cartItems[0].items);
   useEffect(()=>{
     if(cartItems[0].items>0){
@@ -50,7 +71,9 @@ const Navbar = () => {
     
   // },[]);
 
- 
+ useEffect(()=>{
+
+ })
  
 
  
@@ -76,6 +99,7 @@ const Navbar = () => {
  
   return (
     <>
+    
     <div className={`${alert == true ? "flex" : "hidden"} z-20 fixed right-0 top-24 items-center p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400`} role="alert">
   <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
     <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -96,6 +120,7 @@ const Navbar = () => {
           <li className='hover:text-red-500 duration-[0.6s]'> <Link to="/">Home</Link></li>
             <li className='hover:text-red-500 duration-[0.6s]'><Link to="/contact-us">Contact Us</Link></li>
             <li className='hover:text-red-500 duration-[0.6s] cursor-pointer'><p onClick={()=>setCat((prev)=>{false})} onMouseOver={()=>setCat((prev)=>{return true;})} >Products</p>
+            
             {/* <ul onMouseOver={()=>setCat(true)} className={`w-[100vw] absolute top-[100px] left-0 ${cat ? "block": "hidden"}`}>
               <li>
                 <ul className='w-[40%] bg-white relative mx-auto p-12 text-black'>
@@ -123,7 +148,7 @@ const Navbar = () => {
           </Link> : <Link className='w-[40px] hover:text-red-500 duration-[0.6s] rounded-full' to="/user-profile">
               <img className='w-[38px] h-[38px] rounded-full' src={`http://127.0.0.1:8000/assets/${isLogin.image}`} alt="" />
               </Link>  }
-          <Link className='hover:text-red-500 duration-[0.6s]' to="/cartpage"><FontAwesomeIcon className='text-[1.5rem]' icon={faCartPlus} /><span className='rounded text-[16px] text-[red]'>{cartItems[0].items}</span></Link>
+          <p onClick={()=>setsidebar()} className='hover:text-red-500 duration-[0.6s]' ><FontAwesomeIcon className='text-[1.5rem]' icon={faCartPlus} /><span className='rounded text-[16px] text-[red]'>{quantity}</span></p>
           <div onClick={()=>{modalPlay()}} className='p-2 md:p-0 bg-white md:bg-black rounded-md md:static right-5 text-white -z-10 md:z-0 md:text-white top-[6em] absolute'>
             <p className='hover:text-red-500 md:text-white text-black' to="/cartpage"><FontAwesomeIcon className='text-[1.5rem]' icon={faMagnifyingGlass} /></p>
           </div>

@@ -48,6 +48,12 @@ Route::post("/get_single_product", [ProductController::class, "get_single_produc
 
 Route::post("/add_product_to_cart_named", [ProductController::class, "add_product_to_cart_named"]);
 Route::post("/add_product_to_cart_nameless", [ProductController::class, "add_product_to_cart_nameless"]);
+Route::post("/products_from_cart_by_id", [ProductController::class, "products_from_cart_by_id"]);
+Route::post("/products_from_cart_by_token", [ProductController::class, "products_from_cart_by_token"]);
+
+Route::post("/products_num_cart_by_id", [ProductController::class, "products_num_cart_by_id"]);
+Route::post("/products_num_cart_by_token", [ProductController::class, "products_num_cart_by_token"]);
+
 
 
 //get categories

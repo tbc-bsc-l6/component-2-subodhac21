@@ -1,7 +1,41 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { useSelector, useDispatch } from 'react-redux';
+import { add_cart } from '../../auth/productSlice';
+import { add_cart_item } from '../../auth/productSlice';
+
 
 const Product_card = (props) => {
+  const dispatch = useDispatch();
+  const nav = useNavigate();
+  const userLogin = useSelector((state)=>{
+    return state.authReducer.signin[0];
+  })
+  let cartToken = localStorage.getItem('cartItem');
+  const addToCart = (e) =>{
+    e.preventDefault();
+    if(userLogin.fullname != ""){
+        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: props.id, quantity: 1, cust_id: userLogin.id}).then((response)=>{
+            dispatch(add_cart({'items': 1}));
+            dispatch(add_cart_item({'items':[response.data.result[0]]}));
+            // nav("/cartpage");
+            
+        })
+    }
+    else{
+        axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: props.id, quantity: 1, token: cartToken}).then((response)=>{
+          console.log(response);
+            // setUserInfo();
+            let token = response.data.token;
+            localStorage.setItem('cartItem', token);
+            dispatch(add_cart({'items': 1}));
+            dispatch(add_cart_item({'items':[response.data.result[0]]}));
+            // nav("/cartpage");
+        })
+    }
+
+}
   return (
     <div className='w-[250px] mb-12'>
       <div className="group relative block overflow-hidden">
@@ -29,7 +63,7 @@ const Product_card = (props) => {
   <Link to={`/product_detail/${props.id}`} ><img
     src={`http://127.0.0.1:8000/images/${props.image}`}
     alt=""
-    className="h-50 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-50"
+    className="h-[164px] w-[256px] object-cover transition duration-500 group-hover:scale-105 sm:h-50"
   /></Link>
 
   <div className="relative border border-gray-100 bg-white p-6">
@@ -44,7 +78,7 @@ const Product_card = (props) => {
     <p className="mt-1.5 text-sm text-gray-700">Rs: {props.price} /-</p>
 
     <form className="mt-4">
-      <button
+      <button onClick={(e)=>addToCart(e)}
         className="block w-full rounded bg-yellow-400 p-2 text-sm font-medium transition hover:scale-105"
       >
         Add to Cart

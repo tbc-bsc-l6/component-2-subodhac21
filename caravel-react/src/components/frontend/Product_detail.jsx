@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { add_cart } from '../../auth/productSlice';
+import { add_cart, add_cart_item } from '../../auth/productSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Product_detail = () => {
@@ -30,6 +30,7 @@ const Product_detail = () => {
         if(userLogin.fullname != ""){
             axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: id, quantity: quant, cust_id: userLogin.id}).then((response)=>{
                 dispatch(add_cart({'items': quant}));
+                dispatch(add_cart_item({'items':[singlePro]}));
                 nav("/cartpage");
                 
             })
@@ -37,11 +38,12 @@ const Product_detail = () => {
         else{
             axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: id, quantity: quant, token: token1}).then((response)=>{
                 // setUserInfo();
-                nav("/cartpage");
                 let token = response.data.token;
                 localStorage.setItem('cartItem', token);
                 setToken(token);
                 dispatch(add_cart({'items': quant}));
+                dispatch(add_cart_item({'items':[singlePro]}));
+                nav("/cartpage");
             })
         }
 

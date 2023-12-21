@@ -26,11 +26,11 @@ if(isLogin.token === true){
 // },[isLogin]);
   return (
     // isLogin === true ? <Loader/> :
-     <div className='font-[poppins] h-screen'>
-    <Navbar/>
+    //  <div className='font-[poppins] h-screen'>
+    // <Navbar/>
     <Login/>
-    <Footer/>
-    </div>
+    // <Footer/>
+    // </div>
   )
 }
 

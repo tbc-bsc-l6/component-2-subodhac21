@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Routes, Route} from 'react-router-dom';
 import Home from "./routes/Home";
 import ContactUs from "./routes/ContactUs";
-import Cart from "./routes/Cart";
+// import Cart from "./routes/Cart";
 import UserProfile from "./routes/UserProfile";
 import SignIn from "./routes/SignIn";
 import SignUp from "./routes/SignUp";
@@ -22,6 +22,7 @@ import EditProduct from './components/Admin/EditProduct';
 import Product_detail from './components/frontend/Product_detail';
 import Detail from './routes/Detail';
 import CartPage from './routes/CartPage';
+import Layout from './routes/Layout';
 
 
 const App = () => {
@@ -80,20 +81,23 @@ const App = () => {
       loading === true ? <Loader/> :
     <Routes>
       <Route path='*' element={<PageNotFound/>}/>
-      <Route path="/" element={<Home/>}/>
-      <Route path='/contact-us' element={<ContactUs/>}/>
-      {/* <Route path='/products' element={<Products/>}/> */}
+      <Route path="/" element={<Layout/>}>
+        <Route index element={<Home/> }/>
+        <Route path='/contact-us' element={<ContactUs/>}/>
+        {/* <Route path='/products' element={<Products/>}/> */}
 
-      <Route path='/signup' element={<SignUp/>} />
-      <Route path='/cartpage' element={<CartPage/>} />
+        <Route path='/signup' element={<SignUp/>} />
+        <Route path='/cartpage' element={<CartPage/>} />
 
-      <Route path='/cart' element={<Cart/>}/>
-      <Route path='/signin' element={<SignIn isLogin={isLogin}/>}/>
-      <Route path='/about-us' element={<AboutUs/>}/>
+        {/* <Route path='/cart' element={<Cart/>}/> */}
+        <Route path='/signin' element={<SignIn isLogin={isLogin}/>}/>
+        <Route path='/about-us' element={<AboutUs/>}/>
 
-      <Route path='/user-profile' element={<UserProfile/>}></Route>
-      <Route path='/fpass' element={<FPass/>}></Route>
-      <Route path='/product_detail/:id' element={<Detail/>}></Route>
+        <Route path='/user-profile' element={<UserProfile/>}></Route>
+        <Route path='/fpass' element={<FPass/>}></Route>
+        <Route path='/product_detail/:id' element={<Detail/>}></Route>
+      </Route>
+     
 
       <Route path='/dashboard' element={<Dashboard/>}>
         <Route index element={<AdminPage/>}/>

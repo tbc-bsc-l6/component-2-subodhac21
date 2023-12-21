@@ -17,12 +17,12 @@ const SignUp = () => {
 //   }
 // },[]);
   return (
-    // isLogin === true ? <Loader/> :
-    <div className='font-[poppins] h-screen'>
-    <Navbar/>
+    // // isLogin === true ? <Loader/> :
+    // <div className='font-[poppins] h-screen'>
+    // <Navbar/>
     <Main_signup/>
-    <Footer/>
-    </div>
+    // <Footer/>
+    // </div>
   )
 }
 

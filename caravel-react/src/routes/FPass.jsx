@@ -5,13 +5,13 @@ import Footer from '../components/frontend/Footer';
 
 const FPass = () => {
   return (
-    <div>
-         <div className='font-[poppins] h-screen'>
-      <Navbar/>
+    // <div>
+    //      <div className='font-[poppins] h-screen'>
+    //   <Navbar/>
         <FpassPage/>
-      <Footer/>
-    </div>
-    </div>
+    //   <Footer/>
+    // </div>
+    // </div>
   )
 }
 

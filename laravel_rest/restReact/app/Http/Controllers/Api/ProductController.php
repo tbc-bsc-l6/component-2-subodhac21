@@ -104,11 +104,19 @@ class ProductController extends Controller
         $customer_id = $request->cust_id;
         if(count(Tempcart::where(['product_id'=> $pro_id, 'user_id'=> $customer_id])->get()->toArray())>0){
             Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->update(['quantity'=> $quantity]);
-            return response(['status'=> true, 'userid'=> $customer_id]);
+            $result = Product::where(['id', $pro_id])->get()->toArray();
+            return response(['status'=> true, 'userid'=> $customer_id, 'result'=> $result]);
+        }
+        else if(count(Tempcart::where(['user_id'=> $customer_id])->get()->toArray())>0){
+            Tempcart::create(['product_id'=>$pro_id, 'user_id'=>$customer_id, 'quantity'=>$quantity]);
+            $result = Product::where(['id', $pro_id])->get()->toArray();
+            return response(['status'=>true, 'userid'=> $customer_id ,'result'=>$result]);
         }
         else{
             Tempcart::create(['product_id'=> $pro_id, 'user_id'=> $customer_id, 'quantity'=> $quantity, 'cookie_string'=> "0"]);
-            return response(['status'=>true, 'userid'=> $customer_id]);
+            $result = Product::where(['id', $pro_id])->get()->toArray();
+
+            return response(['status'=>true, 'userid'=> $customer_id, 'result'=> $result]);
         }
     }
     public function add_product_to_cart_nameless(Request $request){
@@ -117,13 +125,57 @@ class ProductController extends Controller
         $cookie_token = $request->token;
         if(count(Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->get()->toArray())>0){
             Tempcart::where(['product_id'=> $pro_id, 'cookie_string' => $cookie_token])->update(['quantity'=> $quantity]);
-            return response(['status'=> true, 'token'=> $cookie_token]);
+            $result = Product::where('id', $pro_id)->get()->toArray();
+
+            return response(['status'=> true, 'token'=> $cookie_token ,'result'=>$result]);
+        }
+        else if(count(Tempcart::where(['cookie_string'=> $cookie_token])->get()->toArray())>0){
+            Tempcart::create(['product_id'=>$pro_id, 'user_id'=>'0', 'quantity'=>$quantity, 'cookie_string'=>$cookie_token]);
+            $result = Product::where('id', $pro_id)->get()->toArray();
+
+            return response(['status'=>true, 'token'=> $cookie_token ,'result'=>$result]);
         }
         else{
             $token = Str::random(40); 
             $hashedToken = hash('sha1', $token);
             Tempcart::create(['product_id'=> $pro_id, 'user_id'=> '0', 'quantity'=> $quantity, 'cookie_string'=> $hashedToken]);
-            return response(['status'=>true, 'token'=> $hashedToken]);
+            $result = Product::where('id', $pro_id)->get()->toArray();
+
+            return response(['status'=>true, 'token'=> $hashedToken, 'result'=> $result]);
         }
+    }
+
+    public function products_num_cart_by_id(Request $request){
+        $id = $request->id;
+        $products = count(Tempcart::where('user_id', $id)->get());
+        return response(['num'=> $products]);
+    }
+
+    public function products_num_cart_by_token(Request $request){
+        $token = $request->token;
+        $products = count(Tempcart::where('cookie_string', $token)->get());
+        return response(['num'=> $products]);
+    }
+
+    public function products_from_cart_by_id(Request $request){
+        $id = $request->id;
+        $products = Tempcart::where('user_id', $id)->get();
+        $pro = array();
+        foreach($products as $key => $product){
+            $pro[$key] = $product->cartProducts->toArray();
+        }
+        
+        return response(['product'=> $pro]);
+    }
+
+    public function products_from_cart_by_token(Request $request){
+        $token = $request->token;
+        $products = Tempcart::where('cookie_string', $token)->get();
+        $pro = array();
+        foreach($products as $key => $product){
+            $pro[$key] = $product->cartProducts->toArray();
+        }
+        
+        return response(['product'=> $pro]);
     }
 }

@@ -5,11 +5,11 @@ import Cart from '../components/frontend/Cart'
 const CartPage = () => {
   return (
     <>
-     <div className='font-[poppins] h-screen'>
-    <Navbar/>
+     {/* <div className='font-[poppins] h-screen'>
+    <Navbar/> */}
       <Cart/>
-    <Footer/>
-    </div>
+    {/* <Footer/>
+    </div> */}
     </>
   )
 }

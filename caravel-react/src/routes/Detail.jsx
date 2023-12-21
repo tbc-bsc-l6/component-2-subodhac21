@@ -5,11 +5,11 @@ import Footer from '../components/frontend/Footer'
 const Detail = () => {
   return (
     <>
-    <div className='font-[poppins] h-screen'>
-    <Navbar/>
+    {/* <div className='font-[poppins] h-screen'>
+    <Navbar/> */}
     <Product_detail/>
-    <Footer/>
-    </div>
+    {/* <Footer/>
+    </div> */}
     </>
   )
 }

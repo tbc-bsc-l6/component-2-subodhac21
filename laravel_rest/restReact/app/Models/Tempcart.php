@@ -12,4 +12,8 @@ class Tempcart extends Model
     protected $fillable = [
         'user_id', 'cookie_string', 'quantity', 'product_id'
     ];
+    public function cartProducts(){
+        return $this->belongsTo('App\Models\Product', "product_id", "id");
+    }
+
 }
