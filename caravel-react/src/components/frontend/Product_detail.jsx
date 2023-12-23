@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { add_cart, add_cart_item } from '../../auth/productSlice';
+import { add_cart, add_cart_item, add_message } from '../../auth/productSlice';
 import { useNavigate } from 'react-router-dom';
 
 const Product_detail = () => {
@@ -27,23 +27,44 @@ const Product_detail = () => {
         setUserInfo(userLogin);
     },[])
     const addToCart = (e) =>{
+        // dispatch(add_message({mess: "adding"}));
         if(userLogin.fullname != ""){
-            axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: id, quantity: quant, cust_id: userLogin.id}).then((response)=>{
-                dispatch(add_cart({'items': quant}));
-                dispatch(add_cart_item({'items':[singlePro]}));
-                nav("/cartpage");
+            axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: id, quantity: quant, cust_id: userLogin.id, add: quant}).then((response)=>{
+                if(response.data.repeat == true){
+                    // setLoading(false);
+                    dispatch(add_message({mess: "added_success"}));
+                  }
+                  else{
+                    // setLoading(false);
+                    dispatch(add_cart({'items': 1}));
+                    dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
+                    nav("/cartpage", {state: "redirect"});
+                    dispatch(add_message({mess: "added_success"}));
+        
+                  }
+                })
                 
-            })
         }
         else{
-            axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: id, quantity: quant, token: token1}).then((response)=>{
+            axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: id, quantity: quant, token: token1, add: quant}).then((response)=>{
                 // setUserInfo();
-                let token = response.data.token;
-                localStorage.setItem('cartItem', token);
-                setToken(token);
-                dispatch(add_cart({'items': quant}));
-                dispatch(add_cart_item({'items':[singlePro]}));
-                nav("/cartpage");
+                if(response.data.repeat == true){
+                    // setLoading(false);
+                    dispatch(add_message({mess: "added_success"}));
+        
+        
+                  }
+                  else{
+                    dispatch(add_message({mess: "added_success"}));
+                    // setLoading(false);
+                    let token = response.data.token;
+                    localStorage.setItem('cartItem', token);
+                    dispatch(add_cart({'items': 1}));
+                    // dispatch(add_cart_item({'items':[response.data.result[0]]}));
+                    dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
+                    nav("/cartpage",{state: "redirect"});
+
+                  }
             })
         }
 
@@ -68,39 +89,77 @@ const Product_detail = () => {
     }
 
     useEffect(()=>{
-        let isMounted = true;
+        // let isMounted = true;
         async function get_single_product_only(){
-          if(id != null){
+        //   if(id != null){
             try {
-              const response = await axios.post("http://127.0.0.1:8000/api/get_single_product", { id: id }, { headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+              const response = await axios.post("http://127.0.0.1:8000/api/get_single_product", { id: id, token: cartToken, loginid: userLogin.id }, { headers: {
+                // 'Content-Type': 'application/x-www-form-urlencoded',
               },});
-              if (isMounted) {
+            //   if (isMounted) {
                 // Update state or refs only if the component is still mounted
-                setSinglePro({
-                  pname: response.data.product.name,
-                  pprice: response.data.product.price,
-                  pquant: response.data.product.quantity,
-                  pdesc: response.data.product.description,
-                  pcat: response.data.product.category_id,
-                  pdiscount: response.data.product.discount_id,
-                  pimage: response.data.product.image
-                });
-              }
+                if(response.data.result == "token"){
+                    setSinglePro({
+                        pname: response.data.product.name,
+                        pprice: response.data.product.price,
+                        pquant: response.data.product.quantity,
+                        pdesc: response.data.product.description,
+                        pcat: response.data.category.name,
+                        pdiscount: response.data.product.discount_id,
+                        pimage: response.data.product.image,
+                        pcartquant: response.data.cart_pr.quantity,
+                        ptemp_id: response.data.cart_pr.id
+                        
+                      });
+                      setQuant(response.data.cart_pr.quantity);
+                }
+                else if(response.data.result == "user_id"){
+                    setSinglePro({
+                        pname: response.data.product.name,
+                        pprice: response.data.product.price,
+                        pquant: response.data.product.quantity,
+                        pdesc: response.data.product.description,
+                        pcat: response.data.category.name,
+                        pdiscount: response.data.product.discount_id,
+                        pimage: response.data.product.image,
+                        pcartquant: response.data.cart_pr.quantity,
+                        ptemp_id: response.data.cart_pr.id
+                      });
+                      setQuant(response.data.cart_pr.quantity);
+
+                }
+                else{
+                    setSinglePro({
+                        pname: response.data.product.name,
+                        pprice: response.data.product.price,
+                        pquant: response.data.product.quantity,
+                        pdesc: response.data.product.description,
+                        pcat: response.data.category.name,
+                        pdiscount: response.data.product.discount_id,
+                        pimage: response.data.product.image,
+                        pcartquant: 1,
+                      });
+
+                }
+                
+            //   }
             } catch (error) {
               console.error("Error fetching product details:", error);
               // Handle error if needed
             }
-          }
+        //   }
   
         }
-        get_single_product_only();
+        // if(singlePro.id === undefined)
+            get_single_product_only();
   
-        return ()=>{
-          isMounted = false;
-        }
+        // return ()=>{
+        //   isMounted = false;
+        // }
         
       }, [id]);
+
+      console.log(singlePro);
   return (
       <section className="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800 z-12">
         <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">

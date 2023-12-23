@@ -58,6 +58,8 @@ Route::delete("/delete_cart_pro_byuser/{id}", [ProductController::class, "delete
 Route::delete("/delete_products_from_token/{id}", [ProductController::class, "delete_products_from_token"]);
 
 
+Route::put("/update_tempcart_by_id", [ProductController::class, "update_tempcart_by_id"]);
+
 
 
 //get categories

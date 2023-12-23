@@ -58,8 +58,45 @@ class ProductController extends Controller
     }
     public function get_single_product(Request $request){
         $id = $request->id;
-        $arr = Product::find($id)->toArray();
-        return response(['product'=>$arr]);
+        $token = $request->token;
+        $loginid = $request->loginid;
+        if($token != "" && $this->findIfFoundInCartFromToken($token, $id)){
+            $product = Tempcart::where(['cookie_string'=> $token, 'product_id'=> $id])->get();
+            $pro = $product[0]->cartProducts->toArray();
+            $category = $product[0]->cartProducts->get_category->toArray();
+            return response(['product'=>$pro, 'cart_pr'=> $product[0], 'category'=> $category, 'result'=> 'token']);
+
+        }
+        else if($loginid != "" && $this->findIfFoundInCartFromToken($loginid, $id)){
+            $product = Tempcart::where(['user_id'=> $loginid, 'product_id'=> $id])->get();
+            $pro = $product[0]->cartProducts->toArray();
+            $category = $product[0]->cartProducts->get_category->toArray()[0];
+            return response(['product'=>$pro, 'cart_pr'=> $product[0], 'category'=> $category, 'result'=> 'user_id']);
+
+        }
+        else{
+            $arr = Product::find($id)->toArray();
+            $category = Product::find($id)->get_category->toArray();
+            return response(['product'=>$arr, 'category'=> $category, 'result'=> 'none']);
+        }
+    }
+    public function findIfFoundInCartFromToken($cart_token, $id){
+        $ifPresent = Tempcart::where(['cookie_string'=> $cart_token, 'product_id'=> $id])->get();
+        if(count($ifPresent)>0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public function findIfFoundInCartFromId($user_id, $id){
+        $ifPresent = Tempcart::where(['user_id'=> $user_id, 'product_id'=> $id])->get();
+        if(count($ifPresent)>0){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     public function update_product(Request $request){
        
@@ -171,6 +208,8 @@ class ProductController extends Controller
         }
     }
 
+    
+
     public function products_num_cart_by_id(Request $request){
         $id = $request->id;
         $products = count(Tempcart::where('user_id', $id)->get());
@@ -217,5 +256,14 @@ class ProductController extends Controller
     public function delete_products_from_token(Request $request, $id){
         $result = Tempcart::where('id', $id)->delete();
         return response(['status'=> $result]);
+    }
+
+    public function update_tempcart_by_id(Request $request){
+        $id = $request->id;
+        $quant = $request->quant;
+        $result = Tempcart::where("id", $id)->update(['quantity'=> $quant]);
+        return response([
+            'status' => true,
+        ]);        
     }
 }
