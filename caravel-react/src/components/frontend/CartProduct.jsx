@@ -4,8 +4,10 @@ import { add_cart_item, delete_cart_item } from '../../auth/productSlice';
 import axios from 'axios';
 
 
-const CartProduct = ({id,quantity, image, name, description, price, temp_id, category}) => {
+const CartProduct = ({cartInfo, proQuant, status, id,quantity, image, name, description, price, temp_id, category}) => {
+  console.log(quantity);
     const [quant, setQuant] = useState(quantity);
+    console.log(quant);
     const dispatch = useDispatch();
     const userLogin = useSelector((state)=>{
         return state.authReducer.signin[0];
@@ -18,6 +20,7 @@ const CartProduct = ({id,quantity, image, name, description, price, temp_id, cat
         axios.delete("http://127.0.0.1:8000/api/delete_cart_pro_byuser/"+id).then((response)=>{
           console.log(response);
             if(response.data.status = true){
+              status();
             }
         })
         }
@@ -26,7 +29,7 @@ const CartProduct = ({id,quantity, image, name, description, price, temp_id, cat
         axios.delete("http://127.0.0.1:8000/api/delete_products_from_token/"+id).then((response)=>{
           console.log(response);
         if(response.data.status = true){
-      
+            status();
           }
         })
         }
@@ -34,10 +37,32 @@ const CartProduct = ({id,quantity, image, name, description, price, temp_id, cat
       }
 
       const decreaseCartNum = (e)=>{
-
+        if(quant === undefined){
+          if(quantity>1)
+            setQuant(quantity-1);
+            cartInfo(quantity-1, temp_id);
+        }
+        else{
+          if(quant>1){
+            setQuant(quant-1);
+            cartInfo(quant-1, temp_id);
+          }
+        }
       }
       
       const increaseCartNum = (e) =>{
+        if(quant === undefined){
+          if(quantity < proQuant)
+            setQuant(quantity+1);
+            cartInfo(quantity+1, temp_id);
+          
+        }
+        else{
+          if(quant< proQuant)
+            setQuant(quant+1);
+            cartInfo(quant+1, temp_id);
+
+        }
       
       }
       
@@ -56,7 +81,11 @@ const CartProduct = ({id,quantity, image, name, description, price, temp_id, cat
               </p>
               <p className="text-sm font-medium dark:text-gray-400">
               <span>Category:</span>
-              <span className="ml-2 text-gray-400">{category}</span> 
+              <span className="ml-2 text-gray-400">{category}</span>
+              </p>
+              <p className="text-sm font-medium dark:text-gray-400">
+                
+              <span className="ml-2 text-gray-400">Items:  {proQuant}</span> 
               </p>
               </div>
               </div>
@@ -70,8 +99,8 @@ const CartProduct = ({id,quantity, image, name, description, price, temp_id, cat
               </path>
               </svg>
               </button>
-              <input onClick={()=>increaseCartNum()} type="number" className="w-12 px-2 py-4 text-center border-0 rounded-md dark:bg-gray-800 bg-gray-50 dark:text-gray-400" placeholder={quant} />
-              <button className="py-2 pl-2 border-l border-gray-300 dark:border-gray-600 hover:text-gray-700 dark:text-gray-400">
+              <input  type="number" className="w-12 px-2 py-4 text-center border-0 rounded-md dark:bg-gray-800 bg-gray-50 dark:text-gray-400" placeholder={quant ?? quantity} />
+              <button onClick={()=>increaseCartNum()} className="py-2 pl-2 border-l border-gray-300 dark:border-gray-600 hover:text-gray-700 dark:text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus" viewBox="0 0 16 16">
               <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z">
               </path>

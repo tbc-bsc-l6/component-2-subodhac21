@@ -5,8 +5,65 @@ import { add_cart_item, delete_cart_item } from '../../auth/productSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import CartProduct from './CartProduct';
 
+
+function makeObjectsUnique(arr, property) {
+  const uniqueValues = new Set();
+  return arr.filter(obj => {
+    if (!uniqueValues.has(obj[property])) {
+      uniqueValues.add(obj[property]);
+      return true;
+    }
+    return false;
+  });
+}
+
+function setProductsForCart(newPro, cartPro, categories){
+            let cartTotal = [];
+            newPro.forEach((pro, i)=>{
+                let id = pro['id'];
+                let image = pro['image'];
+                let quantity = cartPro[i]['quantity'];
+                let temp_id = cartPro[i]['id'];
+                let name = pro['name'];
+                let description = pro['description'];
+                let discount = pro['discount_id'];
+                let price = pro['price'];
+                let category_id = pro['category_id'];
+                let catname = categories[i]['name']
+                let proQuant = pro['quantity'];
+                cartTotal.push({
+                    id: id,
+                    image: image,
+                    quantity: quantity,
+                    name: name,
+                    description: description,
+                    discount: discount,
+                    price: price,
+                    category_id: category_id,
+                    catname: catname,
+                    temp_id:temp_id,
+                    proQuant: proQuant
+                });                
+            })
+            let setArr = [...cartTotal]
+            console.log(setArr);
+            return setArr;
+}
+
 const Cart = () => {
-  
+  const [deleteStatus, setDeletedStatus] = useState("");
+  // const [cartInfo, setCartInfo] = useState([]);\
+  const [cartList, setCartList] = useState([]);
+  const cartInfo = (quant, id) =>{
+    // console.log(quant,id);
+    let arr = [ {quant: quant, id: id}, ...cartList];
+    setCartList((prev)=>makeObjectsUnique(arr, "id"));
+  }
+
+  // console.log(cartList);
+  function setDeletedStatusFunc(){
+    setDeletedStatus(true);
+  }
   const location = useLocation();
   // console.log(location.state);
   const nav = useNavigate();
@@ -16,10 +73,7 @@ const Cart = () => {
 })
 const [products, setProducts] = useState([{}]);
 const token = localStorage.getItem("cartItem");
-const cartItems = useSelector((state)=>{
-  return state.productReducer.cart_products;
-})
-console.log(cartItems);
+
 useEffect(()=>{
   // if(cartItems.length > 0 && location.state != "redirect"){
   //   setProducts(cartItems);
@@ -29,8 +83,10 @@ useEffect(()=>{
   if(userLogin.id != ""){
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_id", {id: userLogin.id}).then((response)=>{
       console.log(response);
+      setDeletedStatus("");
+      setProducts(setProductsForCart(response.data.product, response.data.cart_pr, response.data.category));
       // if(cartItems.length != response.data.product.length){
-        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+        // dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
       // }
       // setProducts(response.data.product);
     })
@@ -38,26 +94,39 @@ useEffect(()=>{
   else if(token != ""){
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_token", {token: token}).then((response)=>{
       console.log(response);
+      setDeletedStatus("");
+      setProducts(setProductsForCart(response.data.product, response.data.cart_pr, response.data.category));
+
       // console.log(response.data.product.length);
       // setProducts(response.data.product);
       // if(cartItems.length != response.data.product.length){
-        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+        // dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
       // }
 
     })
   // }
 }
-},[])
+},[deleteStatus])
 
 
-
+const cartItems = useSelector((state)=>{
+  return state.productReducer.cart_products;
+})
 
 let total = 0;
 
 const goToCheckout = (e) =>{
   e.preventDefault();
-  if(userLogin.id === ""){
+  if(userLogin.id != ""){
     nav("/signin");
+  }
+  else{
+    cartList.forEach(({quant, id})=>{
+      console.log(quant,id);
+      axios.put("http://127.0.0.1:8000/api/update_tempcart_by_id", {quant: quant, id: id}).then((response)=>{
+        console.log(response);
+      });
+    })
   }
 }
 
@@ -70,10 +139,11 @@ const goToCheckout = (e) =>{
 <h2 className="mb-10 text-4xl font-bold text-center dark:text-gray-400">Your Cart</h2>
 <div className="px-6 mb-10 lg:px-0">
 
-  {cartItems.map((product)=>{
+  {products.map((product)=>{
   total += product.price * product.quantity;
+  // setCartInfo([...cartInfo, {id: product.temp_id, quant: product.quantity}]);
       return (
-             <CartProduct category={product.catname} quantity={product.quantity} id={product.id} image={product.image} name={product.name} description={product.description} price={product.price} temp_id={product.temp_id} />
+             <CartProduct cartInfo={cartInfo} proQuant={product.proQuant} status={setDeletedStatusFunc} category={product.catname} quantity={product.quantity} id={product.id} image={product.image} name={product.name} description={product.description} price={product.price} temp_id={product.temp_id} />
       );
   })}
 </div>
