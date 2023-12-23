@@ -15,6 +15,9 @@ const Login = () => {
   let isLogin = useSelector((state)=>{
     return state.authReducer.signin[0];
   })
+  const cartItems = useSelector((state)=>{
+    return state.productReducer.cart_products;
+  })
   // const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -28,10 +31,16 @@ const Login = () => {
   const submitForm = (e) =>{
     e.preventDefault();
     setLoad(true);
+    let cartToken = localStorage.getItem('cartItem');
+    let totalCartItemsId = cartItems.map(({id})=>{
+      return id;
+    })
     if(logindetail.email != "" && logindetail.password != ""){
       let userData = {
         email: logindetail.email,
-        password: logindetail.password
+        password: logindetail.password,
+        token: cartToken != "" ? cartToken : "",
+        proid: totalCartItemsId
       }
       axios.post("http://127.0.0.1:8000/api/login", userData).then((response) => {
         

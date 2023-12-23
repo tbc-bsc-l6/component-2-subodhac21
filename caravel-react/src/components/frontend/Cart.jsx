@@ -86,7 +86,7 @@ useEffect(()=>{
       setDeletedStatus("");
       setProducts(setProductsForCart(response.data.product, response.data.cart_pr, response.data.category));
       // if(cartItems.length != response.data.product.length){
-        // dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
       // }
       // setProducts(response.data.product);
     })
@@ -100,7 +100,7 @@ useEffect(()=>{
       // console.log(response.data.product.length);
       // setProducts(response.data.product);
       // if(cartItems.length != response.data.product.length){
-        // dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
+        dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
       // }
 
     })

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\Tempcart;
 use App\Models\Tokenall;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -78,6 +80,11 @@ class UserController extends Controller
         $table = User::where('email', $request->email)->first()->toArray();
         // User::where("email", $request->email)->update(['api_token'=> $token]);
         Tokenall::create(['user_id'=> $table['id'], 'token_id'=> $token]);
+        if($request->token != ""){
+            Tempcart::where("cookie_string", $request->token)->update(['cookie_string'=> 0, 'user_id'=>$table['id']]);
+            
+        }
+        
         if($response){
             return response([
                 'message'=>"User created successfully",
@@ -107,6 +114,15 @@ class UserController extends Controller
         $emailToken = User::where('email', $request->email)->where('usertype', "customer")->first();
         if($emailToken && User::where('password', bcrypt($request->password))){
             $Usertable = User::where('email', $request->email)->first();
+            if($request->token != ""){
+                $productIdList = $request->proid;
+                foreach($productIdList as $pro){
+                    Tempcart::where(['user_id'=> $Usertable->id, "product_id" => $pro])->delete();
+                }
+                Tempcart::where("cookie_string", $request->token)->update(['cookie_string'=> 0, 'user_id'=> $Usertable->id]);
+                
+            }
+            
             $id = $Usertable->id;
         $token = $emailToken->createToken($request->email)->plainTextToken;
         // Tokenall::where('user_Id',$id)->(['api_token'=> $token]);

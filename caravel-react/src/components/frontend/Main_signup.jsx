@@ -11,7 +11,9 @@ const Main_signup = () => {
     //redux dispatch
 
     const dispatch = useDispatch();
-
+    const cartItems = useSelector((state)=>{
+        return state.productReducer.cart_products;
+      })
     let isLogin = useSelector((state)=>{
         return state.authReducer.signin[0];
       })
@@ -34,11 +36,14 @@ const Main_signup = () => {
 
     const submitForm = (e) =>{
         e.preventDefault();
+        let cartToken = localStorage.getItem('cartItem');
+        
         const userData = {
             fullname : fullname,
             email: email,
             password: password,
-            password_confirmation: cpassword
+            password_confirmation: cpassword,
+            token: cartToken != "" ? cartToken : ""
         };
         if(fullname != "" &&  email != "" && password != "" && cpassword != ""){
           
