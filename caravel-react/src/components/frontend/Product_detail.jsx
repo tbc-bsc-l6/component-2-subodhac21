@@ -19,6 +19,7 @@ const Product_detail = () => {
     const userLogin = useSelector((state)=>{
         return state.authReducer.signin[0];
     })
+    console.log(userLogin);
     let cartToken = localStorage.getItem('cartItem');
     useEffect(()=>{
         setToken(cartToken);
@@ -30,6 +31,7 @@ const Product_detail = () => {
         // dispatch(add_message({mess: "adding"}));
         if(userLogin.fullname != ""){
             axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: id, quantity: quant, cust_id: userLogin.id, add: quant}).then((response)=>{
+                // console.log(response);
                 if(response.data.repeat == true){
                     // setLoading(false);
                     dispatch(add_message({mess: "added_success"}));

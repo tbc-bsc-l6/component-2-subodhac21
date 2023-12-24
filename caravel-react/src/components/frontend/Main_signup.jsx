@@ -48,16 +48,17 @@ const Main_signup = () => {
         if(fullname != "" &&  email != "" && password != "" && cpassword != ""){
           
             axios.post("http://127.0.0.1:8000/api/register", userData).then((response) => {
-                console.log(response);
+                // console.log(response);
                 dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
-                localStorage.setItem('loginItem', response.api_token);
-                navigate("/");
+                localStorage.setItem('loginItem', response.data.api_token);
+                localStorage.setItem("cartItem", "");
                 setFullname("");
                 setEmail("");
                 setPassword("");
                 setCpassword("");
                 setStatus({status: response.data.message, color: "blue-700"});
-                navigate("/signin");
+                navigate("/");
+                // navigate("/signin");
             });
 
         }

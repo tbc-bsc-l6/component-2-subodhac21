@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Orderitem;
 use App\Models\Product;
 use App\Models\Tempcart;
 use GuzzleHttp\Psr7\Response;
@@ -67,10 +69,10 @@ class ProductController extends Controller
             return response(['product'=>$pro, 'cart_pr'=> $product[0], 'category'=> $category, 'result'=> 'token']);
 
         }
-        else if($loginid != "" && $this->findIfFoundInCartFromToken($loginid, $id)){
+        else if($loginid != "" && $this->findIfFoundInCartFromId($loginid, $id)){
             $product = Tempcart::where(['user_id'=> $loginid, 'product_id'=> $id])->get();
             $pro = $product[0]->cartProducts->toArray();
-            $category = $product[0]->cartProducts->get_category->toArray()[0];
+            $category = $product[0]->cartProducts->get_category->toArray();
             return response(['product'=>$pro, 'cart_pr'=> $product[0], 'category'=> $category, 'result'=> 'user_id']);
 
         }
@@ -143,19 +145,19 @@ class ProductController extends Controller
         if(count(Tempcart::where(['product_id'=> $pro_id, 'user_id'=> $customer_id])->get()->toArray())>0){
             if($add != "one"){
                 Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->update(['quantity'=> $quantity]);     
-                $result = Product::where(['id', $pro_id])->get()->toArray();
+                $result = Product::where(['id'=> $pro_id])->get()->toArray();
                 $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id])->get()->toArray();
                 $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
                 return response(['repeat'=> false, 'status'=> true, 'userid'=> $customer_id, 'result'=> $result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
             }
             else{
-                return response(['repeat'=> true, 'status'=> true, 'userid'=> $customer_id, 'result'=> $result, 'cart_pr'=> $cart_pro, 'category'=> $category]);
+                return response(['repeat'=> true, 'status'=> true, 'userid'=> $customer_id]);
             }
            
         }
         else if(count(Tempcart::where(['user_id'=> $customer_id])->get()->toArray())>0){
             Tempcart::create(['product_id'=>$pro_id, 'user_id'=>$customer_id, 'quantity'=>$quantity]);
-            $result = Product::where(['id', $pro_id])->get()->toArray();
+            $result = Product::where(['id'=> $pro_id])->get()->toArray();
             $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id, 'quantity'=> $quantity])->get()->toArray();
             $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
 
@@ -163,7 +165,7 @@ class ProductController extends Controller
         }
         else{
             Tempcart::create(['product_id'=> $pro_id, 'user_id'=> $customer_id, 'quantity'=> $quantity, 'cookie_string'=> "0"]);
-            $result = Product::where(['id', $pro_id])->get()->toArray();
+            $result = Product::where(['id'=> $pro_id])->get()->toArray();
             $cart_pro = Tempcart::where(['product_id'=> $pro_id, 'user_id' => $customer_id, 'quantity'=> $quantity, 'cookie_string'=>'0'])->get()->toArray();
             $category = Product::where('id', $pro_id)->get()[0]->get_category->get();
 
@@ -266,4 +268,23 @@ class ProductController extends Controller
             'status' => true,
         ]);        
     }
+
+    public function add_products_to_order(Request $request){
+        $address = $request->address;
+        $date = $request->date;
+        $login = $request->login;
+        $remaks = $request->remarks;
+        $cartItems = Tempcart::where('user_id', $login)->get()->toArray();
+        $token = Str::random(5); 
+        // $hashedToken = hash('sha1', $token);
+        $insertedRow = Order::create(['user_id'=>$login, 'address'=> $address, 'delivery_date'=> $date, 'status'=> 'new', 'remarks'=> $remaks, 'order_no'=> $token]);
+        foreach($cartItems as $item){
+            Orderitem::create(['product_id'=> $item['product_id'], 'order_id'=> $insertedRow->id]);
+        }
+        Tempcart::where("user_id", $login)->delete();
+        return response([
+            'status'=> true
+        ]);
+    }
+
 }

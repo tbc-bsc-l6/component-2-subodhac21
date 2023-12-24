@@ -53,6 +53,7 @@ const Login = () => {
           console.log(response.data);
           dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image, type: "customer"}));
           localStorage.setItem('loginItem', response.data.api_token);
+          localStorage.setItem("cartItem", "");
           navigate("/");
         }
         else{

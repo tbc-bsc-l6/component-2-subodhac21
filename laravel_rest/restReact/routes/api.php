@@ -60,7 +60,7 @@ Route::delete("/delete_products_from_token/{id}", [ProductController::class, "de
 
 Route::put("/update_tempcart_by_id", [ProductController::class, "update_tempcart_by_id"]);
 
-
+Route::post("/add_products_to_order", [ProductController::class, "add_products_to_order"]);
 
 //get categories
 

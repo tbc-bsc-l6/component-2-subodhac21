@@ -23,6 +23,7 @@ import Product_detail from './components/frontend/Product_detail';
 import Detail from './routes/Detail';
 import CartPage from './routes/CartPage';
 import Layout from './routes/Layout';
+import OrderPage from './components/frontend/OrderPage';
 
 
 const App = () => {
@@ -98,6 +99,7 @@ const App = () => {
         <Route path='/user-profile' element={<UserProfile/>}></Route>
         <Route path='/fpass' element={<FPass/>}></Route>
         <Route path='/product_detail/:id' element={<Detail/>}></Route>
+        <Route path='/orderpage' element={<OrderPage/>}/>
       </Route>
      
 
