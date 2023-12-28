@@ -99,7 +99,7 @@ const App = () => {
         <Route path='/user-profile' element={<UserProfile/>}></Route>
         <Route path='/fpass' element={<FPass/>}></Route>
         <Route path='/product_detail/:id' element={<Detail/>}></Route>
-        <Route path='/orderpage' element={<OrderPage/>}/>
+        <Route path='/orderpage/:id' element={<OrderPage/>}/>
       </Route>
      
 

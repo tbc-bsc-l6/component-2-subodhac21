@@ -140,12 +140,16 @@ const placeOrder = (e) =>{
   e.preventDefault(); 
   if(orderValue.address != "" && orderValue.remarks != "" && orderValue.date != ""){
     axios.post("http://127.0.0.1:8000/api/add_products_to_order", {address: orderValue.address, date: orderValue.date, remarks: orderValue.remarks, login: userLogin.id}).then((response)=>{
+      console.log(response);
+       let value = response.data.order_id;
+        cartList.forEach(({quant, id})=>{
+          console.log(quant,id);
+          axios.put("http://127.0.0.1:8000/api/update_tempcart_by_id", {quant: quant, id: id}).then((response)=>{
+          });
+        })
+        console.log(value);
+        nav("/orderpage/"+value);
       });
-    cartList.forEach(({quant, id})=>{
-      console.log(quant,id);
-      axios.put("http://127.0.0.1:8000/api/update_tempcart_by_id", {quant: quant, id: id}).then((response)=>{
-      });
-    })
     
   }
   else{

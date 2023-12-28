@@ -3,8 +3,7 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
-
-
+use App\Http\Controllers\Api\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -71,5 +70,9 @@ Route::post("/add_category", [CategoryController::class, 'add_category']);
 
 //user Routes
 
+
+//order routes
+
+Route::get("/get_orders_by_id/{id}", [OrderController::class, "get_orders_by_id"]);
 
 

@@ -18,6 +18,7 @@ const Product_card = (props) => {
     return state.productReducer.message;
   })
   let cartToken = localStorage.getItem('cartItem');
+  console.log(userLogin);
   const addToCart = (e) =>{
     e.preventDefault();
     setLoading(true);

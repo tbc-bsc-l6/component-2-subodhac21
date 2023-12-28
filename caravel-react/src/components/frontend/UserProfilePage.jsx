@@ -22,7 +22,54 @@ const UserProfilePage = () => {
     return state.authReducer.signin[0];
 })
   return (
-    <div className='flex justify-center items-center flex-col p-10'>
+    <>
+    <div className='w-100 flex items-center justify-center p-8'>
+      <div class="w-2/3">
+    <div class="relative right-0">
+      <ul
+        class="relative flex flex-wrap p-1 list-none rounded-xl bg-blue-gray-50/60"
+        data-tabs="tabs"
+        role="list"
+      >
+        <li class="z-30 flex-auto text-center">
+          <a
+            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            data-tab-target=""
+            active=""
+            role="tab"
+            aria-selected="true"
+            aria-controls="app"
+          >
+            <span data-id="1" onClick={(e)=>changeTab(e)} class="ml-1">User Profile</span>
+          </a>
+        </li>
+        <li class="z-30 flex-auto text-center">
+          <a
+            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            data-tab-target=""
+            role="tab"
+            aria-selected="false"
+            aria-controls="message"
+          >
+            <span data-id="1" onClick={(e)=>changeTab(e)} class="ml-1">Orders</span>
+          </a>
+        </li>
+        <li class="z-30 flex-auto text-center">
+          <a
+            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            data-tab-target=""
+            role="tab"
+            aria-selected="false"
+            aria-controls="settings"
+          >
+            <span class="ml-1">Wishlists</span>
+          </a>
+        </li>
+      </ul>
+      <div data-tab-content="" class="p-5">
+        <div class="block opacity-100" id="app" role="tabpanel">
+          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
+          <div className='flex justify-center items-center flex-col p-2 w-[80%]'>
 
 <div onClick={()=>{setEditPage(true)}} className='bg-slate-800 text-white mb-8 flex justify-center items-center'>
   
@@ -31,7 +78,7 @@ const UserProfilePage = () => {
 </div>
 
 
-      <div className="bg-white overflow-hidden shadow rounded-lg border md:w-[40%] w-100%">
+      <div className="bg-white overflow-hidden shadow rounded-lg border md:w-[80%] w-100%">
     <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
             User Profile
@@ -78,6 +125,50 @@ const UserProfilePage = () => {
 </div>
      
     </div>
+          </p>
+        </div>
+        <div class="hidden opacity-0" id="message" role="tabpanel">
+          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
+          <table class="table-auto">
+            <thead>
+                <tr>
+                <th>Song</th>
+                <th>Artist</th>
+                <th>Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
+                <td>Malcolm Lockyer</td>
+                <td>1961</td>
+                </tr>
+                <tr>
+                <td>Witchy Woman</td>
+                <td>The Eagles</td>
+                <td>1972</td>
+                </tr>
+                <tr>
+                <td>Shining Star</td>
+                <td>Earth, Wind, and Fire</td>
+                <td>1975</td>
+                </tr>
+            </tbody>
+            </table>
+          </p>
+        </div>
+        <div class="hidden opacity-0" id="settings" role="tabpanel">
+          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
+            Comparing yourself to others is the thief of joy.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+    
+    
+    </>
   )
 }
 
