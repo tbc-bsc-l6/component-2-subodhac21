@@ -24,6 +24,7 @@ import Detail from './routes/Detail';
 import CartPage from './routes/CartPage';
 import Layout from './routes/Layout';
 import OrderPage from './components/frontend/OrderPage';
+import Categories from './routes/Categories';
 
 
 const App = () => {
@@ -100,6 +101,7 @@ const App = () => {
         <Route path='/fpass' element={<FPass/>}></Route>
         <Route path='/product_detail/:id' element={<Detail/>}></Route>
         <Route path='/orderpage/:id' element={<OrderPage/>}/>
+        <Route path='/categories' element={<Categories/>}/>
       </Route>
      
 

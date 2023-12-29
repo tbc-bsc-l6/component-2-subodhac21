@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginUser, logoutUser } from '../../auth/authSlice';
 import { useSelector } from 'react-redux'
-
+import axios from 'axios';
 
 
 
 const UserProfilePage = () => {
+const [tab, setTab] = useState("1");
   const [editPage, setEditPage] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -21,59 +22,70 @@ const UserProfilePage = () => {
   let loginData = useSelector((state)=>{
     return state.authReducer.signin[0];
 })
+
+useEffect(()=>{
+    axios.get("http://127.0.0.1:8000/api/get_total_orders/"+loginData.id).then((response)=>{
+        console.log(response);
+       
+      });
+},[]) 
+
+const changeTab = (e) =>{
+    setTab(e.target.dataset.id);
+}
   return (
     <>
     <div className='w-100 flex items-center justify-center p-8'>
-      <div class="w-2/3">
-    <div class="relative right-0">
+      <div className="w-2/3">
+    <div className="relative right-0">
       <ul
-        class="relative flex flex-wrap p-1 list-none rounded-xl bg-blue-gray-50/60"
+        className="relative flex flex-wrap p-1 list-none rounded-xl bg-blue-gray-50/60"
         data-tabs="tabs"
         role="list"
       >
-        <li class="z-30 flex-auto text-center">
+        <li className="z-30 flex-auto text-center">
           <a
-            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            className="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
             data-tab-target=""
             active=""
             role="tab"
             aria-selected="true"
             aria-controls="app"
           >
-            <span data-id="1" onClick={(e)=>changeTab(e)} class="ml-1">User Profile</span>
+            <span data-id="1" onClick={(e)=>changeTab(e)} className={`${tab==="1"? "font-bold text-blue-400" : "none"} ml-1`}>User Profile</span>
           </a>
         </li>
-        <li class="z-30 flex-auto text-center">
+        <li className="z-30 flex-auto text-center">
           <a
-            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            className="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
             data-tab-target=""
             role="tab"
             aria-selected="false"
             aria-controls="message"
           >
-            <span data-id="1" onClick={(e)=>changeTab(e)} class="ml-1">Orders</span>
+            <span data-id="2" onClick={(e)=>changeTab(e)} className={`${tab==="2"? "font-bold text-blue-400" : "none"} ml-1`}>Orders</span>
           </a>
         </li>
-        <li class="z-30 flex-auto text-center">
+        <li className="z-30 flex-auto text-center">
           <a
-            class="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
+            className="z-30 flex items-center justify-center w-full px-0 py-1 mb-0 transition-all ease-in-out border-0 rounded-lg cursor-pointer text-slate-700 bg-inherit"
             data-tab-target=""
             role="tab"
             aria-selected="false"
             aria-controls="settings"
           >
-            <span class="ml-1">Wishlists</span>
+            <span data-id="3" onClick={(e)=>changeTab(e)} className={`${tab==="3"? "font-bold text-blue-400" : "none"} ml-1`}>Wishlists</span>
           </a>
         </li>
       </ul>
-      <div data-tab-content="" class="p-5">
-        <div class="block opacity-100" id="app" role="tabpanel">
-          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
+      <div data-tab-content="" className="p-5">
+        <div className={`${tab==="1" ? "block" :"hidden"} opacity-100`} id="app" role="tabpanel">
+          {/* <p className="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500"> */}
           <div className='flex justify-center items-center flex-col p-2 w-[80%]'>
 
 <div onClick={()=>{setEditPage(true)}} className='bg-slate-800 text-white mb-8 flex justify-center items-center'>
   
-<img class="rounded-full w-[120px] h-[120px]" src={`http://127.0.0.1:8000/images/${loginData.image}`}/>
+<img className="rounded-full w-[120px] h-[120px]" src={`http://127.0.0.1:8000/assets/${loginData.image}`}/>
 
 </div>
 
@@ -125,42 +137,79 @@ const UserProfilePage = () => {
 </div>
      
     </div>
-          </p>
         </div>
-        <div class="hidden opacity-0" id="message" role="tabpanel">
-          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
-          <table class="table-auto">
-            <thead>
-                <tr>
-                <th>Song</th>
-                <th>Artist</th>
-                <th>Year</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                <td>Malcolm Lockyer</td>
-                <td>1961</td>
-                </tr>
-                <tr>
-                <td>Witchy Woman</td>
-                <td>The Eagles</td>
-                <td>1972</td>
-                </tr>
-                <tr>
-                <td>Shining Star</td>
-                <td>Earth, Wind, and Fire</td>
-                <td>1975</td>
-                </tr>
-            </tbody>
-            </table>
-          </p>
+        <div className={`${tab==="2" ? "block": "hidden"} opacity-100`} id="message" role="tabpanel">
+          
+
+<div className="relative overflow-x-auto">
+          <h4 className="font-bold p-4 text-xl mb-8">Orders</h4>
+    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" className="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    Color
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" className="px-6 py-3">
+                    Price
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Apple MacBook Pro 17"
+                </th>
+                <td className="px-6 py-4">
+                    Silver
+                </td>
+                <td className="px-6 py-4">
+                    Laptop
+                </td>
+                <td className="px-6 py-4">
+                    $2999
+                </td>
+            </tr>
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Microsoft Surface Pro
+                </th>
+                <td className="px-6 py-4">
+                    White
+                </td>
+                <td className="px-6 py-4">
+                    Laptop PC
+                </td>
+                <td className="px-6 py-4">
+                    $1999
+                </td>
+            </tr>
+            <tr className="bg-white dark:bg-gray-800">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Magic Mouse 2
+                </th>
+                <td className="px-6 py-4">
+                    Black
+                </td>
+                <td className="px-6 py-4">
+                    Accessories
+                </td>
+                <td className="px-6 py-4">
+                    $99
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
         </div>
-        <div class="hidden opacity-0" id="settings" role="tabpanel">
-          <p class="block font-sans text-base antialiased font-light leading-relaxed text-inherit text-blue-gray-500">
-            Comparing yourself to others is the thief of joy.
-          </p>
+        <div className={`${tab==="3" ? "block" :"hidden"} opacity-100`} id="settings" role="tabpanel">
+          
         </div>
       </div>
     </div>

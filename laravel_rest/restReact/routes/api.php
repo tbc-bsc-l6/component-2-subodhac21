@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\OrderController;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,8 @@ Route::put("/update_tempcart_by_id", [ProductController::class, "update_tempcart
 
 Route::post("/add_products_to_order", [ProductController::class, "add_products_to_order"]);
 
+Route::post("/get_filter_products", [ProductController::class, "get_filter_products"]);
+
 //get categories
 
 Route::get("/get_categories", [CategoryController::class, 'get_categories']);
@@ -75,4 +78,4 @@ Route::post("/add_category", [CategoryController::class, 'add_category']);
 
 Route::get("/get_orders_by_id/{id}", [OrderController::class, "get_orders_by_id"]);
 
-
+Route::get("/get_total_orders/{id}", [OrderController::class, "get_total_orders"]);

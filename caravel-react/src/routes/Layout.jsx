@@ -25,6 +25,8 @@ const Layout = () => {
     }
   return (
     <>
+     <div className='font-[poppins] h-screen'>
+
    {loading==true ? <Loader type="four"/> : <div className='font-[poppins] h-screen'>
 
       {sidebar ? <SideCart status={sidebar} setsidebar={setSidebarFunc}/> : ""}
@@ -34,6 +36,7 @@ const Layout = () => {
     <Footer/>
     </div>
 }
+</div>
     </>
   )
 }

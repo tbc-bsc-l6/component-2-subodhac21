@@ -31,4 +31,17 @@ class OrderController extends Controller
         ]);
 
     }
+
+    public function get_total_orders($id){
+        $orders = Order::where("user_id", $id)->get()->toArray();
+        $items = array();
+        foreach($orders as $key => $order){
+            $id = $order['id'];
+            $items[$key] = Orderitem::where("order_id", $id)->get()->toArray();
+        }
+        return response([
+            'orders'=> $orders,
+            'items'=> $items
+        ]);
+    }
 }

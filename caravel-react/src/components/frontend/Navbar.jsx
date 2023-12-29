@@ -119,7 +119,7 @@ const Navbar = ({setsidebar}) => {
           <ul className='flex align-middle text-[16px] justify-between items-center md:flex-row flex-col md:gap-[4em] gap-[2em] z-999999'>
           <li className='hover:text-red-500 duration-[0.6s]'> <Link to="/">Home</Link></li>
             <li className='hover:text-red-500 duration-[0.6s]'><Link to="/contact-us">Contact Us</Link></li>
-            <li className='hover:text-red-500 duration-[0.6s] cursor-pointer'><p onClick={()=>setCat((prev)=>{false})} onMouseOver={()=>setCat((prev)=>{return true;})} >Products</p>
+            <li className='hover:text-red-500 duration-[0.6s] cursor-pointer'><Link to="/categories">Products </Link>
             
             {/* <ul onMouseOver={()=>setCat(true)} className={`w-[100vw] absolute top-[100px] left-0 ${cat ? "block": "hidden"}`}>
               <li>
