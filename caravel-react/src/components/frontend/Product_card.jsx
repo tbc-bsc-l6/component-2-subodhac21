@@ -8,6 +8,7 @@ import Loader from './Loader';
 
 
 const Product_card = (props) => {
+  console.log(props);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -101,6 +102,11 @@ const Product_card = (props) => {
       className="whitespace-nowrap bg-yellow-400 px-3 py-1.5 text-xs font-medium"
     >
       New
+    </span>
+    <span
+      className="whitespace-nowrap bg-blue-400 px-3 py-1.5 text-xs font-medium float-right"
+    >
+      {props.cat_name}
     </span>
 
     <h3 className="mt-4 text-lg font-medium text-gray-900">{props.name}</h3>

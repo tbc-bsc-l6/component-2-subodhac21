@@ -32,7 +32,7 @@ const Category = () => {
       setDateOption(dateOption1);
     }
   }
-  console.log(dateOption);
+  // console.log(dateOption);
   const changePrice = (e) => {
     if(e.target.checked === true){
       let arr = e.target.value.split(",");
@@ -90,12 +90,12 @@ const Category = () => {
     getNewProducts();
   },[])
 
-console.log(dateOption.length); 
+// console.log(dateOption.length); 
   useEffect(()=>{
     axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption}).then((response)=>{
       setNewPro(response.data.result);
       setLoader(false);
-      console.log(response);
+      // console.log(response);
     })
   }, [catOption,priceOption.length, discountOption.length, dateOption.length])
   return (
@@ -321,7 +321,7 @@ console.log(dateOption.length);
           {
             newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{
                 // console.log(id, description, name, image);
-                  return <Product_card key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
+                  return <Product_card cat_name={cat_name} key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
             })
           }
             

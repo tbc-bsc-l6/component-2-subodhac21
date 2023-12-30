@@ -44,7 +44,7 @@ const AdminLoginpage = () => {
                 // });
                 if(response.data.status==="true"){
                   // setStatus({status: response.data.message, color: "blue-700"});
-                  dispatch(loginUser({fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image, type: "admin"}));
+                  dispatch(loginUser({fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image, type: response.data.type}));
                   localStorage.setItem('loginItem', response.data.api_token);
                   navigate("/dashboard");
                 }
@@ -71,6 +71,7 @@ const AdminLoginpage = () => {
         ...logindetail, [e.target.name]:e.target.value
       });
     }
+    console.log(isLogin);
   return (
     isLogin.token != "" ? <Navigate to="/dashboard"/> :
     <div>

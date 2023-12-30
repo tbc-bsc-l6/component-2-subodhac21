@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SampleEmail;
 use App\Models\Product;
 use App\Models\Tempcart;
 use App\Models\Tokenall;
@@ -10,6 +11,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+
 
 class UserController extends Controller
 {
@@ -157,8 +161,15 @@ class UserController extends Controller
         //         'message' => 'Invalid login details'
         //                    ], 401);
         // }
-        $emailToken = User::where('email', $request->email)->where('usertype', "admin")->first();
-        if($emailToken && User::where('password', $request->password)){
+        $emailToken = User::where('email', $request->email)->where('usertype', "superadmin")->orwhere('usertype', 'admin')->first();
+        $pass = $request->password;
+        if($emailToken->usertype == "superadmin"){
+            $pass = $request->password;
+        }
+        else if($emailToken->userType == "admin"){
+            $pass = bcrypt($request->password);
+        }
+        if($emailToken && User::where('password', $pass)){
             $Usertable = User::where('email', $request->email)->first();
             $id = $Usertable->id;
         $token = $emailToken->createToken($request->email)->plainTextToken;
@@ -169,7 +180,8 @@ class UserController extends Controller
                 'status'=> 'true',
                 'api_token' => $token,
                 'fullname'=>$Usertable->fullname,
-                'image' => 'p1.jpg'
+                'image' => 'p1.jpg',
+                'type'=> $Usertable->usertype
             ],201);
         }
         else{
@@ -180,6 +192,28 @@ class UserController extends Controller
         }
     }
 
+    public function get_users_admin(){
+        return response([
+            'users'=> User::where("usertype", 'admin')->get()->toArray()
+        ]);
+    }
+
+    public function get_user_admin($id){
+        return response([
+            'user'=> User::where("id", $id)->first()
+        ]);
+    }
+
+    public function create_user_admin(Request $request){
+        $fullname = $request->fullname;
+        $email = $request->email;
+        $usertype = $request->usertype;
+        $password = $request->password;
+        $result = User::create(['fullname'=> $fullname, 'email'=> $email, 'usertype'=> $usertype, 'password'=> bcrypt($password)]);
+        return response([
+            'status'=> true,
+        ]);
+    }
 
     public function create()
     {

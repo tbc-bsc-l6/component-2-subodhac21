@@ -28,7 +28,7 @@ const Newproducts = () => {
             newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{
                 // console.log(id, description, name, image);
                 if(cat_name === cat)
-                  return <Product_card key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
+                  return <Product_card cat_name={cat_name} key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
             })
           }
             

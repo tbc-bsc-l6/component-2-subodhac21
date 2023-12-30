@@ -296,36 +296,49 @@ class ProductController extends Controller
 
         $query = Product::query();
 
-        if ($price) {
-            foreach($price as $p){
-                if($p[0] != "0" && $p[1] != "0")
-                    $query->orwhereBetween('price', [$p[0], $p[1]]);
-            }
-        }
-        if ($discount) {
-            foreach($discount as $d){
-                if($d[0] != "0" && $d[1] != "0")
-                    $query->orwhereBetween('discount_id', [$d[0], $d[1]]);
-            }
-        }
-        if ($date) {
-            foreach($date as $d){
-                $date = date("Y-m-d");  
-                $first_date = strtotime($date);
-                $second_date = strtotime("-$d[0] day", $first_date);
-                if(isset($d[0]))
-                    $query->orwhereBetween('created_at', [date("Y-m-d", $second_date), $date]);
-            }
-        }
-
-        if (isset($catid)) {
+        if (isset($catid)) {    
             $query->where('category_id', $catid);
         }
 
+        if ($price) {
+            $query->where(function ($query) use ($price) {
+                foreach ($price as $p) {
+                    if($p[0] != "0" && $p[1] != "0")
+                        $query->orwhereBetween('price', [$p[0], $p[1]]);
+                }
+            });
+        }
+        if ($discount) {
+            $query->where(function ($query) use ($discount) {
+                foreach ($discount as $p) {
+                    if($p[0] != "0" && $p[1] != "0")
+                        $query->orwhereBetween('discount_id', [$p[0], $p[1]]);
+                }
+            });
+        }
+        if ($date) {
+            $query->where(function ($query) use ($date) {
+                foreach ($date as $d) {
+                    $date = date("Y-m-d");  
+                    $first_date = strtotime($date);
+                    $second_date = strtotime("-$d[0] day", $first_date);
+                    if(isset($d[0]))
+                        $query->orwhereBetween('created_at', [date("Y-m-d", $second_date), $date]);
+                }
+            });
+        }
+
+
         // Get the filtered results
         $results = $query->get();
+        $arr = [];
+        foreach($results as $key => $result){
+            $arr[$key] = $result;
+            $arr[$key]['cat_name'] = $result->get_category->toArray()['name'];
+        }
         return json_encode([
-            'result' => $results
+            'result' => $arr,
+            
         ]);
     }
 

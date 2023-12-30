@@ -25,6 +25,9 @@ import CartPage from './routes/CartPage';
 import Layout from './routes/Layout';
 import OrderPage from './components/frontend/OrderPage';
 import Categories from './routes/Categories';
+import Users from './components/Admin/Users';
+import Add_user from './components/Admin/add_user';
+import Edit_user from './components/Admin/Edit_user';
 
 
 const App = () => {
@@ -58,7 +61,7 @@ const App = () => {
               dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "customer"}));
               setIsLogin(true); 
             }
-            else if(response.data.type==='admin')
+            else if(response.data.type==='admin' || response.data.type === "superadmin")
               dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "admin"}));
           }
           setLoading(false);
@@ -110,6 +113,9 @@ const App = () => {
         <Route path='products' element={<Products/>}/>
         <Route path='view_products' element={<ViewProduct/>}/>
         <Route path='edit_product/:id' element={<EditProduct/>}/>
+        <Route path='users' element={<Users/>}/>
+        <Route path='add_user' element={<Add_user/>}/>
+        <Route path='edit_user/:id' element={<Edit_user/>}/>
 
       </Route>
       <Route path='adminloginpage' element={<AdminLoginpage/>}/>

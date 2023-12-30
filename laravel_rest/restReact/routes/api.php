@@ -32,6 +32,17 @@ Route::post("/loginAdmin", [UserController::class, 'loginAdmin']);
 
 Route::post("/authme", [UserController::class, 'authMe']);
 
+Route::get("/get_users_admin", [UserController::class, 'get_users_admin']);
+
+Route::get("/get_user_admin/{id}", [UserController::class, 'get_user_admin']);
+
+
+Route::post("/create_user_admin", [UserController::class, 'create_user_admin']);
+
+
+
+
+
 
 //products routes
 

@@ -26,8 +26,12 @@ export const authSlice = createSlice({
             const loginUser = action.payload;
             if(action.payload.type==="customer")
                 state.signin[0] = loginUser;
-            else if(action.payload.type === 'admin')
+            else if(action.payload.type === 'admin' || action.payload.type === "superadmin"){
                 state.signin[1] = loginUser;
+            }
+            else if(action.payload.type === "superadmin"){
+                state.signin[1] = loginUser;
+            }
         },
         logoutUser: (state, action)=>{
             const logoutUser = {
