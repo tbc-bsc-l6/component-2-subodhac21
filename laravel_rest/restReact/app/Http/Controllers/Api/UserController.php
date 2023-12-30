@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\SampleEmail;
 use App\Models\Product;
 use App\Models\Tempcart;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Tokenall;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -116,7 +117,7 @@ class UserController extends Controller
         //                    ], 401);
         // }
         $emailToken = User::where('email', $request->email)->where('usertype', "customer")->first();
-        if($emailToken && User::where('password', bcrypt($request->password))){
+        if($emailToken &&  Hash::check($request->password, $emailToken->password)){
             $Usertable = User::where('email', $request->email)->first();
             if($request->token != ""){
                 $productIdList = $request->proid;
@@ -147,6 +148,9 @@ class UserController extends Controller
             ], 200);
         }
     }
+
+
+
     public function loginAdmin(Request $request){
         $val = $request->validate([
             'email' => 'required|email|',
@@ -161,15 +165,23 @@ class UserController extends Controller
         //         'message' => 'Invalid login details'
         //                    ], 401);
         // }
-        $emailToken = User::where('email', $request->email)->where('usertype', "superadmin")->orwhere('usertype', 'admin')->first();
+        $emailToken = User::where('email', $request->email)->first();
+        if(!isset($emailToken)){
+            return response([
+                'message'=> "Login failed",
+                'status' => 'false',
+            ], 200);
+        }
         $pass = $request->password;
         if($emailToken->usertype == "superadmin"){
-            $pass = $request->password;
+            $pass = $request->password=== $emailToken->password ? true: false;
         }
-        else if($emailToken->userType == "admin"){
-            $pass = bcrypt($request->password);
+        else if($emailToken->usertype == "admin"){
+            $pass = Hash::check($request->password, $emailToken->password);
         }
-        if($emailToken && User::where('password', $pass)){
+        
+
+        if($emailToken && $pass){
             $Usertable = User::where('email', $request->email)->first();
             $id = $Usertable->id;
         $token = $emailToken->createToken($request->email)->plainTextToken;
@@ -208,10 +220,58 @@ class UserController extends Controller
         $fullname = $request->fullname;
         $email = $request->email;
         $usertype = $request->usertype;
-        $password = $request->password;
-        $result = User::create(['fullname'=> $fullname, 'email'=> $email, 'usertype'=> $usertype, 'password'=> bcrypt($password)]);
+        $password = bcrypt($request->password);
+        $result = User::create(['fullname'=> $fullname, 'email'=> $email, 'usertype'=> $usertype, 'password'=> $password]);
         return response([
             'status'=> true,
+        ]);
+    }
+
+    public function edit_user_admin(Request $request){
+        $id = $request->id;
+        $email = $request->email;
+        $fullname = $request->fullname;
+        $usertype = $request->usertype;
+        $repeatEmail = User::where('id',"!=", $id)->where("email", $email)->first();
+        if($repeatEmail){
+            return response([
+                "status"=> "failed",
+                'message'=> "email exists already!!"
+            ]);
+        }
+        else{
+            User::where("id", $id)->update(['fullname'=> $fullname, 'email'=> $email, 'usertype'=>$usertype]);
+            return response([
+                'status'=> true,
+                'message'=> "Users details successfully updated!!"
+            ]);
+        }
+    }
+
+    public function reset_user_admin(Request $request){
+        $id = $request->id;
+        $newPass = $request->newpassword;
+        $oldpass = $request->oldpassword;
+        
+        $user = User::where("id", $id)->first();
+        $ifPasswordMatch = Hash::check( $oldpass, $user->password);
+        if($ifPasswordMatch){
+            User::where("id", $id)->update(["password"=> bcrypt($newPass)]);
+            return response([
+                'status'=> true
+            ]);
+        }
+        else{
+            return response([
+                'status'=> false
+            ]);
+        }
+    }
+
+    public function delete_user_admin(Request $request, $id){
+        User::where("id", $id)->delete();
+        return response([
+            'status'=> true
         ]);
     }
 

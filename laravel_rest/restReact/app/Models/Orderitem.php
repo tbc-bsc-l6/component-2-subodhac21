@@ -13,4 +13,11 @@ class Orderitem extends Model
         'product_id', 'order_id', 'quantity'
     ];
 
+    protected function getMasterOrder(){
+        return $this->belongsTo("App\Models\Order", "order_id", "id");
+    }
+    protected function getProductDetail(){
+        return $this->hasOne("App\Models\Product", "product_id", "id");
+    }
+
 }

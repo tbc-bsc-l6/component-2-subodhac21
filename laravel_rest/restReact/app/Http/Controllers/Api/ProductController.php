@@ -277,7 +277,7 @@ class ProductController extends Controller
         $cartItems = Tempcart::where('user_id', $login)->get()->toArray();
         $token = Str::random(5); 
         // $hashedToken = hash('sha1', $token);
-        $insertedRow = Order::create(['user_id'=>$login, 'address'=> $address, 'delivery_date'=> $date, 'status'=> 'new', 'remarks'=> $remaks, 'order_no'=> $token]);
+        $insertedRow = Order::create(['user_id'=>$login, 'address'=> $address, 'delivery_date'=> $date, 'status'=> 'New', 'remarks'=> $remaks, 'order_no'=> $token]);
         foreach($cartItems as $item){
             Orderitem::create(['product_id'=> $item['product_id'], 'order_id'=> $insertedRow->id, 'quantity'=> $item['quantity']]);
         }

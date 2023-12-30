@@ -12,4 +12,8 @@ class Order extends Model
     protected $fillable = [
         'user_id', 'address', 'order_no', 'delivery_date', 'status', 'remarks'
     ];
+
+    protected function getChildOrder(){
+        return $this->hasMany("App\Models\Orderitem", "id", "order_id");
+    }
 }

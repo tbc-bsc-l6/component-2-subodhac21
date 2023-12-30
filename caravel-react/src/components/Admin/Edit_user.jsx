@@ -21,8 +21,23 @@ const Edit_user = () => {
     const nav = useNavigate();
    
 
+
     const changeInfo = (e) =>{
         setUserInfo({...userInfo, [e.target.name]: e.target.value});
+    }
+
+    const submitUser = (e) =>{
+        e.preventDefault();
+        let userData = userInfo;
+        if(userData.fullname != "" && userData.email != "" && userData.usertype != ""){
+            if(userData.password === userData.cpassword){
+                axios.put("http://127.0.0.1:8000/api/edit_user_admin", userData).then((response)=>{
+                    if(response.data.status === true)
+                        nav("/dashboard/users");
+                    // console.log(response);
+                });
+            }
+        }
     }
   return (
     
@@ -68,7 +83,7 @@ const Edit_user = () => {
                     onClick={(e)=>{submitUser(e)}}
                         type="submit"
                         className="w-full text-center py-3 rounded bg-green text-white bg-green-500 hover:bg-green-dark focus:outline-none my-1"
-                    >Create User</button>
+                    >Update User</button>
 
                    
                 </div>

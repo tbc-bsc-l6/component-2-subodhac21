@@ -28,6 +28,8 @@ import Categories from './routes/Categories';
 import Users from './components/Admin/Users';
 import Add_user from './components/Admin/add_user';
 import Edit_user from './components/Admin/Edit_user';
+import ResetPass from './components/Admin/ResetPass';
+import AllOrders from './components/Admin/AllOrders';
 
 
 const App = () => {
@@ -116,6 +118,8 @@ const App = () => {
         <Route path='users' element={<Users/>}/>
         <Route path='add_user' element={<Add_user/>}/>
         <Route path='edit_user/:id' element={<Edit_user/>}/>
+        <Route path='reset_user/:id' element={<ResetPass/>}/>
+        <Route path='allorders' element={<AllOrders/>}/>
 
       </Route>
       <Route path='adminloginpage' element={<AdminLoginpage/>}/>

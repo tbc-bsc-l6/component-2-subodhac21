@@ -39,6 +39,12 @@ Route::get("/get_user_admin/{id}", [UserController::class, 'get_user_admin']);
 
 Route::post("/create_user_admin", [UserController::class, 'create_user_admin']);
 
+Route::put("/edit_user_admin", [UserController::class, 'edit_user_admin']);
+
+Route::put("/reset_user_admin", [UserController::class, 'reset_user_admin']);
+
+Route::delete("/delete_user_admin/{id}", [UserController::class, 'delete_user_admin']);
+
 
 
 
@@ -90,3 +96,9 @@ Route::post("/add_category", [CategoryController::class, 'add_category']);
 Route::get("/get_orders_by_id/{id}", [OrderController::class, "get_orders_by_id"]);
 
 Route::get("/get_total_orders/{id}", [OrderController::class, "get_total_orders"]);
+
+Route::get("/get_orders_all_admin", [OrderController::class, "get_orders_all_admin"]);
+
+Route::put("/change_order_status", [OrderController::class, "change_order_status"]);
+
+

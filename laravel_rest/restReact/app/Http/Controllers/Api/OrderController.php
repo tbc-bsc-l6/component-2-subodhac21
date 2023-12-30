@@ -44,4 +44,27 @@ class OrderController extends Controller
             'items'=> $items
         ]);
     }
+
+    public function get_orders_all_admin(){
+        $ordersChild = Orderitem::all();
+        $orders = array();
+        foreach($ordersChild as $key => $order){
+            $orderid = $order->order_id;
+            $product_id = $order->product_id;
+            $orders[$key]['products'] = Product::where("id", $product_id)->first();
+            $orders[$key]['order_Main'] = Order::where("id", $orderid)->first();
+            // $orderitems[$key]['product'] = Product::where("id", $order->getChildOrder->product_id);
+        }
+        return response([
+            // 'ordersitem'=> $orderitems,
+            'orders'=> $orders,
+            'orderItem'=> $ordersChild
+        ]);
+    }
+
+    function change_order_status(Request $request){
+        $id = $request->id;
+        $value = $request->value;
+        Order::where("id", $id)->update(['status'=> $value]);
+    }
 }

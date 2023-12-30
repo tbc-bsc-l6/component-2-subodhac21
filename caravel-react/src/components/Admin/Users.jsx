@@ -4,13 +4,22 @@ import { Link } from 'react-router-dom'
 
 const Users = () => {
     const [users, setUsers] = useState([]);
+    const [status, setStatus] = useState(false);
+    const deleteUser = (e) =>{
+        let id = e.target.dataset.id;
+        axios.delete("http://127.0.0.1:8000/api/delete_user_admin/"+id).then((response)=>{
+            // console.log(response);
+            setStatus(true);
+        });
+    }
     useEffect(()=>{
         axios.get("http://127.0.0.1:8000/api/get_users_admin").then((response)=>{
-            console.log(response);
+            // console.log(response);
             let arr = response.data.users;
             setUsers(arr);
+            setStatus(false);
         })
-    },[]);
+    },[status]);
     
   return (
 
@@ -66,9 +75,9 @@ const Users = () => {
                 <td className="px-6 py-4">
                     <Link to={`/dashboard/edit_user/${user.id}`}  href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</Link>
                     <br/>
-                    <Link to={`reset_user/${user.id}`} href="#" className="font-medium text-green-600 dark:text-red-500 hover:underline">Reset Password</Link>
+                    <Link to={`/dashboard/reset_user/${user.id}`} href="#" className="font-medium text-green-600 dark:text-red-500 hover:underline">Reset Password</Link>
                     <br/>
-                    <Link to={`delete_user/${user.id}`} href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">Delete User</Link>
+                    <Link data-id={user.id} onClick={(e)=>deleteUser(e)} href="#" className="font-medium text-red-600 dark:text-red-500 hover:underline">Delete User</Link>
 
 
                 </td>
