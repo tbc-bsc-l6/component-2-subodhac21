@@ -30,6 +30,8 @@ import Add_user from './components/Admin/add_user';
 import Edit_user from './components/Admin/Edit_user';
 import ResetPass from './components/Admin/ResetPass';
 import AllOrders from './components/Admin/AllOrders';
+import CategoryList from './components/Admin/CategoryList';
+import AddCategory from './components/Admin/AddCategory';
 
 
 const App = () => {
@@ -120,6 +122,8 @@ const App = () => {
         <Route path='edit_user/:id' element={<Edit_user/>}/>
         <Route path='reset_user/:id' element={<ResetPass/>}/>
         <Route path='allorders' element={<AllOrders/>}/>
+        <Route path='categorylist' element={<CategoryList/>}/>
+        <Route path='addcategory' element={<AddCategory/>} />
 
       </Route>
       <Route path='adminloginpage' element={<AdminLoginpage/>}/>
