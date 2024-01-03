@@ -120,6 +120,7 @@ const AllOrders = () => {
                                 <option value="" disabled>Select</option>
                                 <option value="New">New</option>
                                 <option value="Delivered">Delivered</option>
+                                <option value="Paid">Paid</option>
                                 <option value="Cancelled">Cancelled</option>
                                 <option value="Deactivated">Deactivated</option>
                                 <option value="Out of Stock">Out of Stock</option>

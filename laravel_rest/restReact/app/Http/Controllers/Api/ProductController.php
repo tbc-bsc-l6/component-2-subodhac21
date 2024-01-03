@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\Orderitem;
 use App\Models\Product;
@@ -339,6 +340,24 @@ class ProductController extends Controller
         return json_encode([
             'result' => $arr,
             
+        ]);
+    }
+
+    public function get_searched_product(Request $request){
+        $searchterm = $request->term;
+        $idsArray1 = Product::select('id')->where('name', 'like', '%' . $searchterm . '%')->orWhere('description', 'like', '%' . $searchterm . '%')->get()->toArray();
+        $idsArray2 =  Product::select('id')->whereHas('get_category', function ($query) use ($searchterm) {
+            $query->where('name', 'like', '%' . $searchterm . '%');
+        })->get()->toArray();
+        $totalId = array_merge($idsArray1, $idsArray2);
+        // $totalId = array_unique(array_merge($idsArray1, $idsArray2));
+        $totalArr = array();
+        foreach($totalId as $key=> $ids){
+            $totalArr[$key] = Product::where('id', $ids['id'])->get()[0];
+            $totalArr[$key]['cat_name'] = Product::where('id', $ids['id'])->get()[0]->get_category->toArray()['name'];
+        }
+        return response([
+            'products'=> array_unique($totalArr)
         ]);
     }
 

@@ -3,7 +3,8 @@ import axios from 'axios';
 import Product_card from './product_card';
 import Loader from './Loader';
 
-const Category = () => {
+const Category = ({term, stopSearching}) => {
+  const [term1,setTerm] = useState(term);
   const [newPro, setNewPro] = useState([]);
   const [category, setCategory] = useState([]);
   const [sortbtn, setSortBtn] = useState(false);
@@ -92,12 +93,23 @@ const Category = () => {
 
 // console.log(dateOption.length); 
   useEffect(()=>{
-    axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption}).then((response)=>{
-      setNewPro(response.data.result);
-      setLoader(false);
-      // console.log(response);
-    })
-  }, [catOption,priceOption.length, discountOption.length, dateOption.length])
+    if(term1 === ""){
+      axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption}).then((response)=>{
+        setNewPro(response.data.result);
+        setLoader(false);
+        // console.log(response);
+      })
+    }
+    else{
+      axios.post("http://127.0.0.1:8000/api/get_searched_product", {term: term1}).then((response)=>{
+        setNewPro(response.data.products);
+        setTerm("");
+        // setLoader(false);
+        // console.log(response);
+      })
+    }
+  
+  }, [catOption,priceOption.length, discountOption.length, dateOption.length, term])
   return (
     <div>
     
@@ -313,10 +325,14 @@ const Category = () => {
           </form>
 
           <div className="lg:col-span-3">
+          <div className='flex items-center justify-center my-8 text-2xl'>{term1!= "" && term1!= null? <p>Searched Results for {term}</p>: <p> Filters Products</p>}</div>
+          
             {/* starts */}
             {
-              newPro.length===0? <Loader type="three"/> :
+              newPro.length===0 ? <div className='text-2xl flex items-center justify-center'>No results Found</div> :
+                // 
             <div className='flex items-center justify-center w-[100%]'>
+           
         <div className='grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 items-center xl:grid-cols-2 mt-10 w-[78%] sm:w-[85%] m-auto lg:w-[90%] place-items-center'>
           {
             newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{

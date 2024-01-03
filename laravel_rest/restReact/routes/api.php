@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\MailController;
+
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +83,9 @@ Route::post("/add_products_to_order", [ProductController::class, "add_products_t
 
 Route::post("/get_filter_products", [ProductController::class, "get_filter_products"]);
 
+Route::post("/get_searched_product", [ProductController::class, "get_searched_product"]);
+
+
 //get categories
 
 Route::get("/get_categories", [CategoryController::class, 'get_categories']);
@@ -101,4 +106,12 @@ Route::get("/get_orders_all_admin", [OrderController::class, "get_orders_all_adm
 
 Route::put("/change_order_status", [OrderController::class, "change_order_status"]);
 
+Route::post("/do_payment", [OrderController::class, "do_payment"]);
 
+
+
+//mail controller
+
+
+
+Route::post("/contactMe", [MailController::class, "contactMe"]);

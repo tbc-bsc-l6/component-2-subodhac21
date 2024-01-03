@@ -32,6 +32,7 @@ import ResetPass from './components/Admin/ResetPass';
 import AllOrders from './components/Admin/AllOrders';
 import CategoryList from './components/Admin/CategoryList';
 import AddCategory from './components/Admin/AddCategory';
+import Payment from './components/frontend/Payment';
 
 
 const App = () => {
@@ -109,6 +110,7 @@ const App = () => {
         <Route path='/product_detail/:id' element={<Detail/>}></Route>
         <Route path='/orderpage/:id' element={<OrderPage/>}/>
         <Route path='/categories' element={<Categories/>}/>
+        <Route path='/payment' element={<Payment/>}/>
       </Route>
      
 

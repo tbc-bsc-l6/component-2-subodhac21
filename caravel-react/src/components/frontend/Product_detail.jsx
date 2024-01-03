@@ -329,7 +329,7 @@ const Product_detail = () => {
                                 </svg>
                                 <span className="sr-only">Info</span>
                                 <div>
-                                    <span className="font-medium"></span> {`${quantMess === "dangermessage1" ? "Cart cannot contain less than 1 item" : "Cart cannot contain item more than in stock"}`}
+                                    <span className="font-medium"></span> {`${quantMess === "dangermessage1" ? "Cart cannot contain less than 1 item" : "Cart cannot contain items more than in stock"}`}
                                 </div>
                             </div>
                         <div className="flex flex-wrap items-center -mx-4 ">

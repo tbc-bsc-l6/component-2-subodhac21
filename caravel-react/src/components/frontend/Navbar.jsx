@@ -112,7 +112,7 @@ const Navbar = ({setsidebar}) => {
     <header onClick={()=>setCat((prev)=>{false})} className={`w-full text-white bg-[#0f172a] h-[auto] flex justify-center items-center p-4 z-10`}>
       <nav className='lg:w-[94%] w-[100%] flex justify-between items-center m-auto z-0'>
         <div className='w-12 h-12'>
-          <Link to="/"><img src={logo} alt="logo" /></Link>
+          <Link to="/"><img style={{ filter: "invert(100%)" }} className='w-[100px] h-[40px]' src={logo} alt="logo" /></Link>
         
         </div>
         <div  className={`md:static duration-[0.6s] bg-[#18223a] md:bg-[#0f172a] absolute md:min-h-fit min-h-[70vh] pt-[50px] md:pt-[0px] md:w-auto flex flex-row items-start justify-center left-0 top-[-100%] md:top-[-10px] w-full ${drop ? "top-[11%] z-22 md:z-0" : "-z-66"}`}>
@@ -160,7 +160,7 @@ const Navbar = ({setsidebar}) => {
       </nav>
     </header>
     <div onClick={()=>modalPlay()} className={`${modalHide} w-screen top-0 left-0 fixed h-screen z-20 inset-0 bg-gray-500 bg-opacity-75 transition-opacity${modalHide}`}></div>
-    <Modal hide={modalHide}/>
+    <Modal modalPlay={modalPlay} hide={modalHide}/>
     </>
   )
 }

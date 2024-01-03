@@ -3,6 +3,8 @@ import { Navigate, useLocation, useParams } from 'react-router-dom'
 import  axios  from 'axios';
 import Loader from './Loader';
 import {useSelector} from "react-redux";
+import Payment from "./Payment";
+
 
 const OrderPage = () => {
   const [loader, setLoader] = useState(true);
@@ -11,10 +13,10 @@ const OrderPage = () => {
   const [cat, setCat] = useState([]);
   const [pro, setPro] = useState([]);
     const {id} = useParams();
-    console.log(id);
+    // console.log(id);
     useEffect(()=>{
       axios.get("http://127.0.0.1:8000/api/get_orders_by_id/"+id).then((response)=>{
-        console.log(response);
+        // console.log(response);
         setOrders(response.data.orders[0]);
         setPro(response.data.items);
         setItems(response.data.order_item);
@@ -22,16 +24,17 @@ const OrderPage = () => {
         setLoader(false);
       });
     },[]);
-    console.log(orders);
+    // console.log(orders);
     let subTotal = 0;
     let discountTotal = 0;
     const userDetail = useSelector((state)=>{
       return state.authReducer.signin[0];
     })
-    console.log(userDetail);
+    // console.log(userDetail);
   return (
-    id === undefined ? <Navigate to="/"/> :
+    id === undefined || orders===undefined ? <Navigate to="/"/> :
     loader === true ? <Loader/> : 
+    
     <div>
       <div className="py-14 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
 
@@ -109,6 +112,7 @@ const OrderPage = () => {
             </svg>
             <p className="cursor-pointer text-sm leading-5 ">{userDetail.email}</p>
           </div>
+          
         </div>
         <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
           <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
@@ -121,9 +125,9 @@ const OrderPage = () => {
               <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">{orders.address}</p>
             </div>
           </div>
-          {/* <div className="flex w-full justify-center items-center md:justify-start md:items-start">
-            <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-5 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800">Edit Details</button>
-          </div> */}
+          <div className="flex w-full justify-center items-center md:justify-start md:items-start">
+            <Payment id={id} totalprice={subTotal - discountTotal}/>
+          </div>
         </div>
       </div>
     </div>

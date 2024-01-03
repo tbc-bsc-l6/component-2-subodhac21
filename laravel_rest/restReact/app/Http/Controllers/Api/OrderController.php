@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Orderitem;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class OrderController extends Controller
     //
     public function get_orders_by_id(Request $request, $id){
         // $id = $request->id;
-        $data = Order::where('id', $id)->get();
+        $data = Order::where(['id'=> $id])->where("status", "!=", "Paid")->get();
         $itemsData = Orderitem::where('order_id', $id)->get();
         $items = array();
         $cat = array();
@@ -29,7 +30,6 @@ class OrderController extends Controller
             'order_item'=>$itemsData,
             'cat' => $cat
         ]);
-
     }
 
     public function get_total_orders($id){
@@ -66,5 +66,12 @@ class OrderController extends Controller
         $id = $request->id;
         $value = $request->value;
         Order::where("id", $id)->update(['status'=> $value]);
+    }
+
+    function do_payment(Request $request){
+        $id = $request->id;
+        $price = $request->price;
+        Payment::create(['order_id'=> $id, 'totalpaid'=> $price]);
+        Order::where("id", $id)->update(['status'=> "Paid"]);
     }
 }
