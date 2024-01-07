@@ -4,6 +4,7 @@ import Product_card from './product_card';
 import Loader from './Loader';
 
 const Category = ({term, stopSearching}) => {
+  const [sortItem, setSortItem] = useState("");
   const [term1,setTerm] = useState(term);
   const [newPro, setNewPro] = useState([]);
   const [category, setCategory] = useState([]);
@@ -33,7 +34,12 @@ const Category = ({term, stopSearching}) => {
       setDateOption(dateOption1);
     }
   }
-  // console.log(dateOption);
+
+  const sortItems = (e) =>{
+    setSortItem(e.target.dataset.sort);
+    setSortBtn(false);
+  }
+
   const changePrice = (e) => {
     if(e.target.checked === true){
       let arr = e.target.value.split(",");
@@ -94,10 +100,10 @@ const Category = ({term, stopSearching}) => {
 // console.log(dateOption.length); 
   useEffect(()=>{
     if(term1 === ""){
-      axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption}).then((response)=>{
+      axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption, sortItem: sortItem}).then((response)=>{
         setNewPro(response.data.result);
         setLoader(false);
-        // console.log(response);
+        console.log(response);
       })
     }
     else{
@@ -109,7 +115,7 @@ const Category = ({term, stopSearching}) => {
       })
     }
   
-  }, [catOption,priceOption.length, discountOption.length, dateOption.length, term])
+  }, [catOption,priceOption.length, discountOption.length, dateOption.length, term, sortItem])
   return (
     <div>
     
@@ -157,9 +163,11 @@ const Category = ({term, stopSearching}) => {
             <div className={`${sortbtn === true ? "block": "hidden"} absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none`} role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
               <div className="py-1" role="none">
                
-                <a href="#" className="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-0">Ascending</a>
-                <a href="#" className="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-1">Descending</a>
-                <a href="#" className="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-2">Newest</a>
+                <a data-sort="asc" onClick={(e)=>sortItems(e)} href="#" className="font-medium text-gray-900 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-0">Ascending</a>
+                <a data-sort="desc" onClick={(e)=>sortItems(e)} href="#" className="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-1">Descending</a>
+                <a data-sort="newest" onClick={(e)=>sortItems(e)} href="#" className="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-2">Newest</a>
+                <a data-sort="oldest" onClick={(e)=>sortItems(e)} href="#" className="text-gray-500 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-2">Oldest</a>
+
               </div>
             </div>
           </div>

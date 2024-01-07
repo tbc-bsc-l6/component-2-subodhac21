@@ -32,7 +32,7 @@ const OrderPage = () => {
     })
     // console.log(userDetail);
   return (
-    id === undefined || orders===undefined ? <Navigate to="/"/> :
+    id === undefined ? <Navigate to="/"/> :
     loader === true ? <Loader/> : 
     
     <div>

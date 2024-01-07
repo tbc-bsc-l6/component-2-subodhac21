@@ -9,7 +9,7 @@ import SideCart from '../components/frontend/SideCart';
 
 
 
-const Home = () => {
+const Home = ({}) => {
   const [sidebar, setSidebar] = useState(false);
   function setSidebarFunc(){
     setSidebar(!sidebar);

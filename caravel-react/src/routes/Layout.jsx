@@ -7,6 +7,11 @@ import { useSelector } from 'react-redux';
 import Loader from '../components/frontend/Loader'
 
 const Layout = () => {
+  // const [items, setItems] = useState(0);
+  // const changeItems = (e) =>{
+  //   let items = e.target.items;
+  //   setItems(items);
+  // }
   const [loading, setLoading] = useState(false);
   const mess = useSelector((state)=>{
     return state.productReducer.message;
@@ -32,7 +37,6 @@ const Layout = () => {
       {sidebar ? <SideCart status={sidebar} setsidebar={setSidebarFunc}/> : ""}
     <Navbar setsidebar={setSidebarFunc}/>
         {<Outlet/>}
-
     <Footer/>
     </div>
 }

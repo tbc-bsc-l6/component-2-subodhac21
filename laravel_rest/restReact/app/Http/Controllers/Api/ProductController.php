@@ -16,6 +16,7 @@ class ProductController extends Controller
 {
     //
     public function add_product(Request $request){
+        // return response(["req"=>$request->header('Authorization')]);
         $data = [
             'name'=>$request->pname,
             'image'=>"",
@@ -294,6 +295,7 @@ class ProductController extends Controller
         $price = $request->price;
         $discount = $request->discount;
         $date = $request->date;
+        $sort = $request->sortItem;
 
         $query = Product::query();
 
@@ -316,6 +318,16 @@ class ProductController extends Controller
                         $query->orwhereBetween('discount_id', [$p[0], $p[1]]);
                 }
             });
+        }
+        if($sort != ""){
+
+            if ($sort == 'newest' || $sort == 'oldest') {
+                $query->orderBy("created_at", $sort == 'newest' ? 'desc' : 'asc');
+            }
+            else{
+                $query->orderBy('id', $sort == 'asc' ? 'asc' : 'desc');
+
+            }
         }
         if ($date) {
             $query->where(function ($query) use ($date) {

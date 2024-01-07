@@ -54,7 +54,9 @@ Route::delete("/delete_user_admin/{id}", [UserController::class, 'delete_user_ad
 
 //products routes
 
-Route::post("/add_product", [ProductController::class, "add_product"]);
+Route::group(['middleware' => 'checkToken'], function () {
+    Route::post("/add_product", [ProductController::class, "add_product"]);
+});
 Route::post("/add_product_image", [ProductController::class, "add_product_image"]);
 
 Route::post("update_product", [ProductController::class, "update_product"]);

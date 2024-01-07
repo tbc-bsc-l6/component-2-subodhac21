@@ -9,7 +9,7 @@ import Loader from './Loader';
 
 const Product_card = (props) => {
   console.log(props);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
   const userLogin = useSelector((state)=>{
@@ -22,16 +22,16 @@ const Product_card = (props) => {
   console.log(userLogin);
   const addToCart = (e) =>{
     e.preventDefault();
-    setLoading(true);
-    dispatch(add_message({mess: "adding"}));
+    // setLoading(true);
+    // dispatch(add_message({mess: "adding"}));
     if(userLogin.fullname != ""){
         axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: props.id, quantity: 1, cust_id: userLogin.id, add: "one"}).then((response)=>{
           if(response.data.repeat == true){
-            setLoading(false);
-            dispatch(add_message({mess: "added_success"}));
+            // setLoading(false);
+            dispatch(add_message({mess: "already_success"}));
           }
           else{
-            setLoading(false);
+            // setLoading(false);
             dispatch(add_cart({'items': 1}));
             dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
             // nav("/cartpage");
@@ -44,14 +44,14 @@ const Product_card = (props) => {
         axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: props.id, quantity: 1, token: cartToken, add: "one"}).then((response)=>{
           console.log(response);
           if(response.data.repeat == true){
-            setLoading(false);
+            // setLoading(false);
             dispatch(add_message({mess: "added_success"}));
 
 
           }
           else{
             dispatch(add_message({mess: "added_success"}));
-            setLoading(false);
+            // setLoading(false);
             let token = response.data.token;
             localStorage.setItem('cartItem', token);
             dispatch(add_cart({'items': 1}));

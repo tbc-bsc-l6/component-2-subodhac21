@@ -31,7 +31,7 @@ const Products = () => {
     setVar({...vars, [e.target.name]: e.target.files[0]});
   }
   const [total, setTotal] = useState(0);
-
+  const localToken = localStorage.getItem("loginItem");
   const [cats, setCat] = useState({
     cname: "",
     cdesc: ""
@@ -48,7 +48,7 @@ const Products = () => {
         pdiscount: vars.pdiscount
       };
       try{
-        axios.post("http://127.0.0.1:8000/api/add_product", userdata).then((response)=>{
+        axios.post("http://127.0.0.1:8000/api/add_product", userdata, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
           if(response.data.status===true){
             const data = new FormData();
             data.append('image', vars.pimage);

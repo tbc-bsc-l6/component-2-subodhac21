@@ -34,11 +34,12 @@ const Product_detail = () => {
                 // console.log(response);
                 if(response.data.repeat == true){
                     // setLoading(false);
+                    dispatch(add_cart({'items': 0}));
                     dispatch(add_message({mess: "added_success"}));
                   }
                   else{
                     // setLoading(false);
-                    dispatch(add_cart({'items': 1}));
+                    dispatch(add_cart({'items': quant}));
                     dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
                     nav("/cartpage", {state: "redirect"});
                     dispatch(add_message({mess: "added_success"}));
@@ -52,8 +53,9 @@ const Product_detail = () => {
                 // setUserInfo();
                 if(response.data.repeat == true){
                     // setLoading(false);
+                    dispatch(add_cart({'items': 0}));
+
                     dispatch(add_message({mess: "added_success"}));
-        
         
                   }
                   else{
@@ -61,7 +63,7 @@ const Product_detail = () => {
                     // setLoading(false);
                     let token = response.data.token;
                     localStorage.setItem('cartItem', token);
-                    dispatch(add_cart({'items': 1}));
+                    dispatch(add_cart({'items': quant}));
                     // dispatch(add_cart_item({'items':[response.data.result[0]]}));
                     dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
                     nav("/cartpage",{state: "redirect"});

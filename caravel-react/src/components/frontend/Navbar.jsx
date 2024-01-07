@@ -24,6 +24,7 @@ const Navbar = ({setsidebar}) => {
   let cartItems = useSelector((state)=>{
     return state.productReducer.cart_items;
   })
+  console.log(cartItems[0].items);
   useEffect(()=>{
     if(userLogin.id != ""){
       axios.post(base_url+"products_num_cart_by_id", {id: userLogin.id}).then((response)=>{
