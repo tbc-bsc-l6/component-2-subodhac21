@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'cors' => \App\Http\Middleware\Cors::class,
         'checkToken' => \App\Http\Middleware\CheckTokenMiddleware::class,
+        'superadminonly' => \App\Http\Middleware\SuperAdminOnlyMiddleware::class,
     ];
 }

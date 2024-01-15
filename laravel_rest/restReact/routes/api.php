@@ -34,21 +34,27 @@ Route::post("/loginAdmin", [UserController::class, 'loginAdmin']);
 
 Route::post("/authme", [UserController::class, 'authMe']);
 
-Route::get("/get_users_admin", [UserController::class, 'get_users_admin']);
 
-Route::get("/get_user_admin/{id}", [UserController::class, 'get_user_admin']);
+Route::group(['middleware' => 'superadminonly'], function () {
 
+    Route::get("/get_users_admin", [UserController::class, 'get_users_admin']);
 
-Route::post("/create_user_admin", [UserController::class, 'create_user_admin']);
-
-Route::put("/edit_user_admin", [UserController::class, 'edit_user_admin']);
-
-Route::put("/reset_user_admin", [UserController::class, 'reset_user_admin']);
-
-Route::delete("/delete_user_admin/{id}", [UserController::class, 'delete_user_admin']);
+    Route::get("/get_user_admin/{id}", [UserController::class, 'get_user_admin']);
 
 
+    Route::post("/create_user_admin", [UserController::class, 'create_user_admin']);
 
+    Route::put("/edit_user_admin", [UserController::class, 'edit_user_admin']);
+
+    Route::put("/reset_user_admin", [UserController::class, 'reset_user_admin']);
+
+    Route::delete("/delete_user_admin/{id}", [UserController::class, 'delete_user_admin']);
+
+    Route::get("/get_users_customer", [UserController::class, 'get_users_customer']);
+
+    Route::delete("/delete_user_customer/{id}", [UserController::class, 'delete_user_admin']);
+
+});
 
 
 

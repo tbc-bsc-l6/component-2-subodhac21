@@ -33,6 +33,7 @@ import AllOrders from './components/Admin/AllOrders';
 import CategoryList from './components/Admin/CategoryList';
 import AddCategory from './components/Admin/AddCategory';
 import Payment from './components/frontend/Payment';
+import Customers from './components/Admin/Customers';
 
 
 const App = () => {
@@ -126,6 +127,8 @@ const App = () => {
         <Route path='allorders' element={<AllOrders/>}/>
         <Route path='categorylist' element={<CategoryList/>}/>
         <Route path='addcategory' element={<AddCategory/>} />
+        <Route path='customers' element={<Customers/>} />
+
 
       </Route>
       <Route path='adminloginpage' element={<AdminLoginpage/>}/>

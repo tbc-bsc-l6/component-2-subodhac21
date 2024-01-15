@@ -87,7 +87,6 @@ class UserController extends Controller
         Tokenall::create(['user_id'=> $table['id'], 'token_id'=> $token]);
         if($request->token != ""){
             Tempcart::where("cookie_string", $request->token)->update(['cookie_string'=> 0, 'user_id'=>$table['id']]);
-            
         }
         
         if($response){
@@ -210,6 +209,12 @@ class UserController extends Controller
         ]);
     }
 
+    public function get_users_customer(){
+        return response([
+            'users'=> User::where("usertype", 'customer')->get()->toArray()
+        ]);
+    }
+
     public function get_user_admin($id){
         return response([
             'user'=> User::where("id", $id)->first()
@@ -269,6 +274,13 @@ class UserController extends Controller
     }
 
     public function delete_user_admin(Request $request, $id){
+        User::where("id", $id)->delete();
+        return response([
+            'status'=> true
+        ]);
+    }
+
+    public function delete_user_customer(Request $request, $id){
         User::where("id", $id)->delete();
         return response([
             'status'=> true

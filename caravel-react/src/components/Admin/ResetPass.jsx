@@ -13,9 +13,10 @@ const ResetPass = () => {
         cpassword: "",
         newpassword: "",
     });
+    const localToken = localStorage.getItem("loginItem");
 
     useEffect(()=>{
-        axios.get("http://127.0.0.1:8000/api/get_user_admin/"+id).then((response)=>{
+        axios.get("http://127.0.0.1:8000/api/get_user_admin/"+id, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
             setSaveInfo(response.data.user);
         });
     },[]);
@@ -29,7 +30,7 @@ const ResetPass = () => {
         console.log(userData);
         if(userData.oldpassword != "" && userData.cpassword != "" && userData.newpassword != ""){
             if(userData.oldpassword === userData.cpassword){
-                axios.put("http://127.0.0.1:8000/api/reset_user_admin", userData).then((response)=>{
+                axios.put("http://127.0.0.1:8000/api/reset_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
                     if(response.data.status === true)
                         nav("/dashboard/users");
                     });

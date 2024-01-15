@@ -11,6 +11,7 @@ const Add_user = () => {
         password: "",
         cpassword: ""
     });
+    const localToken = localStorage.getItem("loginItem");
 
     const changeInfo = (e) =>{
         setUserInfo({...userInfo, [e.target.name]: e.target.value});
@@ -20,7 +21,7 @@ const Add_user = () => {
         let userData = userInfo;
         if(userData.fullname != "" && userData.email != "" && userData.usertype != "" && userData.password != "" && userData.cpassword != ""){
             if(userData.password === userData.cpassword){
-                axios.post("http://127.0.0.1:8000/api/create_user_admin", userData).then((response)=>{
+                axios.post("http://127.0.0.1:8000/api/create_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
                     nav("/dashboard/users");
                     // console.log(response);
                 });

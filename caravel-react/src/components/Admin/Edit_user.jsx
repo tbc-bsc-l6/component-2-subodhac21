@@ -11,9 +11,10 @@ const Edit_user = () => {
         email: "",
         usertype: "",
     });
-    console.log(id);
+    const localToken = localStorage.getItem("loginItem");
+
     useEffect(()=>{
-        axios.get("http://127.0.0.1:8000/api/get_user_admin/"+id).then((response)=>{
+        axios.get("http://127.0.0.1:8000/api/get_user_admin/"+id, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
             console.log(response);
             setUserInfo(response.data.user);
         });
@@ -31,7 +32,7 @@ const Edit_user = () => {
         let userData = userInfo;
         if(userData.fullname != "" && userData.email != "" && userData.usertype != ""){
             if(userData.password === userData.cpassword){
-                axios.put("http://127.0.0.1:8000/api/edit_user_admin", userData).then((response)=>{
+                axios.put("http://127.0.0.1:8000/api/edit_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
                     if(response.data.status === true)
                         nav("/dashboard/users");
                     // console.log(response);
