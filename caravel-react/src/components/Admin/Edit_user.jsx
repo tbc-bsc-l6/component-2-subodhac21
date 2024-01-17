@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../frontend/Loader';
 
 const Edit_user = () => {
+    const [status, setStatus] = useState("");
     const {id} = useParams();
     const [saveInfo, setSaveInfo] = useState({fullname: ""});
     const [userInfo, setUserInfo] = useState({
@@ -15,7 +16,6 @@ const Edit_user = () => {
 
     useEffect(()=>{
         axios.get("http://127.0.0.1:8000/api/get_user_admin/"+id, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-            console.log(response);
             setUserInfo(response.data.user);
         });
     },[]);
@@ -35,7 +35,9 @@ const Edit_user = () => {
                 axios.put("http://127.0.0.1:8000/api/edit_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
                     if(response.data.status === true)
                         nav("/dashboard/users");
-                    // console.log(response);
+                    else{
+                        setStatus(response.data.message);
+                    }
                 });
             }
         }
@@ -50,6 +52,14 @@ const Edit_user = () => {
 <div className="bg-grey-lighter min-h-[60vh] flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                {status != "" ? <div role="alert">
+  <div class="bg-red-500 text-white font-bold rounded-t px-4 py-2">
+    Danger
+  </div>
+  <div class="border border-t-0 border-red-400 rounded-b bg-red-100 px-4 py-3 text-red-700">
+    <p>{status}</p>
+  </div>
+</div> : ""} 
                     <h1 className="mb-8 text-3xl text-center">Edit User</h1>
                     <input 
                     onChange={(e)=>changeInfo(e)}

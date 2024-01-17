@@ -5,20 +5,16 @@ import axios from 'axios';
 
 
 const CartProduct = ({cartInfo, proQuant, status, id,quantity, image, name, description, price, temp_id, category}) => {
-  console.log(quantity);
     const [quant, setQuant] = useState(quantity);
-    console.log(quant);
     const dispatch = useDispatch();
     const userLogin = useSelector((state)=>{
         return state.authReducer.signin[0];
     })
     const remove_item = (e) =>{
         let id = e.currentTarget.dataset.id;
-        console.log(id);
         if(userLogin.id != ""){
           dispatch(delete_cart_item({'id': id}));
         axios.delete("http://127.0.0.1:8000/api/delete_cart_pro_byuser/"+id).then((response)=>{
-          console.log(response);
             if(response.data.status = true){
               status();
             }
@@ -27,7 +23,6 @@ const CartProduct = ({cartInfo, proQuant, status, id,quantity, image, name, desc
         else{
           dispatch(delete_cart_item({'id': id}));
         axios.delete("http://127.0.0.1:8000/api/delete_products_from_token/"+id).then((response)=>{
-          console.log(response);
         if(response.data.status = true){
             status();
           }
@@ -70,7 +65,7 @@ const CartProduct = ({cartInfo, proQuant, status, id,quantity, image, name, desc
     <div>
        <div key={id} className="relative flex flex-wrap items-center pb-8 mb-8 -mx-4 border-b border-gray-200 dark:border-gray-500 xl:justify-between border-opacity-40">
               <div className="w-full mb-4 md:mb-0 h-96 md:h-44 md:w-56">
-              <img src={`http://127.0.0.1:8000/images/${image}`} alt="" className="object-cover w-full h-full"/>
+              <img src={image.includes("https") ? image : `http://127.0.0.1:8000/images/${image}`} alt="" className="object-cover w-full h-full"/>
               </div>
               <div className="w-full px-4 mb-6 md:w-96 xl:mb-0">
               <a className="block mb-5 text-xl font-medium hover:underline dark:text-gray-400" href="#">

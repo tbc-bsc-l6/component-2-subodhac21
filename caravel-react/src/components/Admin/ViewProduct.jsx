@@ -150,7 +150,7 @@ const ViewProduct = () => {
                         {pro.name}
                     </th>
                     <td className="px-6 py-4">
-                        <img className='w-16 h-16' src={`http://127.0.0.1:8000/images/${pro.image}`} alt="Not available" />
+                        <img className='w-16 h-16' src={pro.image.includes('https') ? pro.image : `http://127.0.0.1:8000/images/${pro.image}`} alt="Not available" />
                     </td>
                     <td className="px-6 py-4">
                         {pro.quantity}

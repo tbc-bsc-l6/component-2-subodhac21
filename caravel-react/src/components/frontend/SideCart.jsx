@@ -27,7 +27,6 @@ const SideCart = ({setsidebar, status}) => {
       
         if(userLogin.id != ""){
           axios.post("http://127.0.0.1:8000/api/products_from_cart_by_id", {id: userLogin.id}).then((response)=>{
-            console.log(response);
             // setProducts(response.data.product);
             if(cartItems.length != response.data.product.length){
               dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
@@ -36,7 +35,6 @@ const SideCart = ({setsidebar, status}) => {
         }
         else{
           axios.post("http://127.0.0.1:8000/api/products_from_cart_by_token", {token: token}).then((response)=>{
-            console.log(response);
             // setProducts(response.data.product);
             if(cartItems.length != response.data.product.length){
               dispatch(add_cart_item({'items':response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
@@ -49,11 +47,9 @@ const SideCart = ({setsidebar, status}) => {
 
     const remove_item = (e) =>{
       let id = e.target.dataset.id;
-      console.log(id);
       if(userLogin.id != ""){
         dispatch(delete_cart_item({'id': id}));
       axios.delete("http://127.0.0.1:8000/api/delete_cart_pro_byuser/"+id).then((response)=>{
-        console.log(response);
           if(response.data.status = true){
           }
       })
@@ -61,7 +57,6 @@ const SideCart = ({setsidebar, status}) => {
       else{
         dispatch(delete_cart_item({'id': id}));
       axios.delete("http://127.0.0.1:8000/api/delete_products_from_token/"+id).then((response)=>{
-        console.log(response);
       if(response.data.status = true){
 
         }
@@ -110,7 +105,7 @@ let total = 0;
                     return (
                         <li key={pro.id} className="flex py-6">
                         <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                          <img src={`http://127.0.0.1:8000/images/${pro.image}`} alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." className="h-full w-full object-cover object-center" />
+                          <img src={pro.image.includes("https") ? pro.image : `http://127.0.0.1:8000/images/${pro.image}`} alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." className="h-full w-full object-cover object-center" />
                         </div>
   
                         <div className="ml-4 flex flex-1 flex-col">

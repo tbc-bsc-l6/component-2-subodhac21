@@ -9,7 +9,7 @@ import SideCart from '../components/frontend/SideCart';
 
 
 
-const Home = ({}) => {
+const Home = ({cartCount}) => {
   const [sidebar, setSidebar] = useState(false);
   function setSidebarFunc(){
     setSidebar(!sidebar);
@@ -21,7 +21,7 @@ const Home = ({}) => {
       {sidebar ? <SideCart status={sidebar} setsidebar={setSidebarFunc}/> : ""}
     <Navbar setsidebar={setSidebarFunc}/> */}
     <Main_body/>
-    <Newproducts/>
+    <Newproducts cartCount={cartCount}/>
     {/* <TrendProducts/> */}
 
     {/* <Footer/> */}

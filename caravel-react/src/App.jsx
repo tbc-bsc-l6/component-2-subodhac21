@@ -44,7 +44,6 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
 
-  // console.log(isLogin);
   let tokenInfilestorage = localStorage.getItem("loginItem");
   const loginData = useSelector((state)=>{
     return state.authReducer.signin[0];
@@ -61,14 +60,13 @@ const App = () => {
         const data = axios.post(url, userData, { headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },}).then((response) => {
-          // console.log(response.data.user[0].fullname);
           if(response.data.status==='true'){
             if(response.data.type==='customer'){
               dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "customer"}));
               setIsLogin(true); 
             }
             else if(response.data.type==='admin' || response.data.type === "superadmin")
-              dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: "admin"}));
+              dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: response.data.email, token: token, image: response.data.image, type: response.data.type}));
           }
           setLoading(false);
           
@@ -76,7 +74,6 @@ const App = () => {
 
       }catch(e){
 
-        console.log(e);
       }
     
     }

@@ -11,7 +11,6 @@ const Paypal = ({price, id}) => {
         }
     })
     const paypal = useRef();
-    console.log(price);
     useEffect(()=>{
         window.paypal.Buttons({
             createOrder: (data, actions, err) => {
@@ -32,10 +31,9 @@ const Paypal = ({price, id}) => {
             onApprove: async(data, actions) => {
                 const order = await actions.order.capture();
                 setPaid(true);
-                // console.log(order);
             },
             onerror: (err) => {
-                console.log(err);
+                alert(err);
             }
 
 

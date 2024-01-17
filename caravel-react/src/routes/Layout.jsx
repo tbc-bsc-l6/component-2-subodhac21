@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 import Loader from '../components/frontend/Loader'
 
 const Layout = () => {
-  // const [items, setItems] = useState(0);
-  // const changeItems = (e) =>{
-  //   let items = e.target.items;
-  //   setItems(items);
-  // }
+  const [cartCountTotal, setCartCount] = useState(0);
+  const getCartCount = (count) =>{
+    setCartCount(count);
+  }
+  
   const [loading, setLoading] = useState(false);
   const mess = useSelector((state)=>{
     return state.productReducer.message;
@@ -35,8 +35,8 @@ const Layout = () => {
    {loading==true ? <Loader type="four"/> : <div className='font-[poppins] h-screen'>
 
       {sidebar ? <SideCart status={sidebar} setsidebar={setSidebarFunc}/> : ""}
-    <Navbar setsidebar={setSidebarFunc}/>
-        {<Outlet/>}
+    <Navbar setsidebar={setSidebarFunc} cartCount={cartCountTotal}/>
+        {<Outlet cartCount={getCartCount}/>}
     <Footer/>
     </div>
 }

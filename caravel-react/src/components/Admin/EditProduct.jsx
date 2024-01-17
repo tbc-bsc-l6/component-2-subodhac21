@@ -25,10 +25,8 @@ const EditProduct = () => {
     pimage: null,
   });
 
-  console.log(vars);
 
   const [image, setImage] = useState(null);
-  console.log(image);
   const changeImage = (e) =>{
     setImage(e.target.files[0]);
   }
@@ -53,7 +51,7 @@ const EditProduct = () => {
               });
             }
           } catch (error) {
-            console.error("Error fetching product details:", error);
+            alert("Error fetching product details:", error);
             // Handle error if needed
           }
         }
@@ -68,8 +66,6 @@ const EditProduct = () => {
     }, [id]);
     // const {id} = state;
     // const {state} = props.location;
-    // console.log(state);
-    // console.log(props);
   const [catmodal, setCatModal] = useState(false);
   const [category, setCategory] = useState([]); 
   const [updateCat, setUpdateCat] = useState(false);
@@ -89,13 +85,11 @@ const EditProduct = () => {
       userdata.append('pdiscount', vars.pdiscount);
       userdata.append('pid', id);
       userdata.append('pimage', image ? image : "");
-      // console.log(userdata);
       // try{
         axios.post("http://127.0.0.1:8000/api/update_product", userdata, { headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },}).then((response)=>{
           // if(response.data.status===true){
-            console.log(response);
                 navigate("/dashboard/view_products");
            
         }) 
@@ -106,7 +100,6 @@ const EditProduct = () => {
 
   useEffect(()=>{
     axios.get("http://127.0.0.1:8000/api/get_categories").then((response)=>{
-      // console.log(response);
       let arrPro = response.data.allcat;
       setCategory(arrPro);
   })
@@ -128,7 +121,6 @@ const EditProduct = () => {
     };
     if(cats.cname != "" && cats.cdesc !=""){
       axios.post("http://127.0.0.1:8000/api/add_category", userdata).then((response)=>{
-        // console.log(response);
         setUpdateCat(!updateCat);
         setCatModal(false);
       })

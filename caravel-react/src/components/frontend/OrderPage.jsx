@@ -13,10 +13,8 @@ const OrderPage = () => {
   const [cat, setCat] = useState([]);
   const [pro, setPro] = useState([]);
     const {id} = useParams();
-    // console.log(id);
     useEffect(()=>{
       axios.get("http://127.0.0.1:8000/api/get_orders_by_id/"+id).then((response)=>{
-        // console.log(response);
         setOrders(response.data.orders[0]);
         setPro(response.data.items);
         setItems(response.data.order_item);
@@ -24,13 +22,11 @@ const OrderPage = () => {
         setLoader(false);
       });
     },[]);
-    // console.log(orders);
     let subTotal = 0;
     let discountTotal = 0;
     const userDetail = useSelector((state)=>{
       return state.authReducer.signin[0];
     })
-    // console.log(userDetail);
   return (
     id === undefined ? <Navigate to="/"/> :
     loader === true ? <Loader/> : 
@@ -98,7 +94,7 @@ const OrderPage = () => {
       <div className="flex flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0">
         <div className="flex flex-col justify-start items-start flex-shrink-0">
           <div className="flex justify-center w-full md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
-            <img className='w-25 h-20' src={`http://127.0.0.1:8000/assets/${userDetail.image}`} alt="avatar" />
+            <img className='w-25 h-20' src={userDetail.image.includes("https") ? userDetail.image : `http://127.0.0.1:8000/assets/${userDetail.image}`} alt="avatar" />
             <div className="flex justify-start items-start flex-col space-y-2">
               <p className="text-base dark:text-white font-semibold leading-4 text-left text-gray-800">{userDetail.fullname}</p>
               <p className="text-sm dark:text-gray-300 leading-5 text-gray-600">10 Previous Orders</p>

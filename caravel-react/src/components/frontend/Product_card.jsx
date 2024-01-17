@@ -8,7 +8,6 @@ import Loader from './Loader';
 
 
 const Product_card = (props) => {
-  console.log(props);
   // const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
@@ -19,7 +18,6 @@ const Product_card = (props) => {
     return state.productReducer.message;
   })
   let cartToken = localStorage.getItem('cartItem');
-  console.log(userLogin);
   const addToCart = (e) =>{
     e.preventDefault();
     // setLoading(true);
@@ -33,6 +31,7 @@ const Product_card = (props) => {
           else{
             // setLoading(false);
             dispatch(add_cart({'items': 1}));
+            props.cartCount(1);
             dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
             // nav("/cartpage");
             dispatch(add_message({mess: "added_success"}));
@@ -42,7 +41,6 @@ const Product_card = (props) => {
     }
     else{
         axios.post("http://127.0.0.1:8000/api/add_product_to_cart_nameless", {pro_id: props.id, quantity: 1, token: cartToken, add: "one"}).then((response)=>{
-          console.log(response);
           if(response.data.repeat == true){
             // setLoading(false);
             dispatch(add_message({mess: "added_success"}));
@@ -59,8 +57,6 @@ const Product_card = (props) => {
             dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
           }
             // setUserInfo();
-           
-
             // nav("/cartpage");
         })
     }
@@ -92,7 +88,7 @@ const Product_card = (props) => {
   </button>
 
   <Link to={`/product_detail/${props.id}`} ><img
-    src={`http://127.0.0.1:8000/images/${props.image}`}
+    src={props.image.includes("https") ? `${props.image}` : `http://127.0.0.1:8000/images/${props.image}`}
     alt=""
     className="h-[164px] w-[256px] object-cover transition duration-500 group-hover:scale-105 sm:h-50"
   /></Link>

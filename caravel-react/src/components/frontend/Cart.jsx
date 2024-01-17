@@ -46,7 +46,6 @@ function setProductsForCart(newPro, cartPro, categories){
                 });                
             })
             let setArr = [...cartTotal]
-            console.log(setArr);
             return setArr;
 }
 
@@ -67,17 +66,14 @@ const Cart = () => {
   // const [cartInfo, setCartInfo] = useState([]);\
   const [cartList, setCartList] = useState([]);
   const cartInfo = (quant, id) =>{
-    // console.log(quant,id);
     let arr = [ {quant: quant, id: id}, ...cartList];
     setCartList((prev)=>makeObjectsUnique(arr, "id"));
   }
 
-  // console.log(cartList);
   function setDeletedStatusFunc(){
     setDeletedStatus(true);
   }
   const location = useLocation();
-  // console.log(location.state);
   const nav = useNavigate();
   const dispatch = useDispatch();
   const userLogin = useSelector((state)=>{
@@ -94,7 +90,6 @@ useEffect(()=>{
   
   if(userLogin.id != ""){
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_id", {id: userLogin.id}).then((response)=>{
-      console.log(response);
       setDeletedStatus("");
       setProducts(setProductsForCart(response.data.product, response.data.cart_pr, response.data.category));
       // if(cartItems.length != response.data.product.length){
@@ -105,10 +100,8 @@ useEffect(()=>{
   }
   else if(token != ""){
     axios.post("http://127.0.0.1:8000/api/products_from_cart_by_token", {token: token}).then((response)=>{
-      console.log(response);
       setDeletedStatus("");
       setProducts(setProductsForCart(response.data.product, response.data.cart_pr, response.data.category));
-      // console.log(response.data.product.length);
       // setProducts(response.data.product);
       // if(cartItems.length != response.data.product.length){
       dispatch(add_cart_item({'items': response.data.product, 'cart': response.data.cart_pr, 'category': response.data.category}));
@@ -140,15 +133,12 @@ const placeOrder = (e) =>{
   e.preventDefault(); 
   if(orderValue.address != "" && orderValue.remarks != "" && orderValue.date != ""){
     cartList.forEach(({quant, id})=>{
-      // console.log(quant,id);
       axios.put("http://127.0.0.1:8000/api/update_tempcart_by_id", {quant: quant, id: id}).then((response)=>{
       });
     })
     axios.post("http://127.0.0.1:8000/api/add_products_to_order", {address: orderValue.address, date: orderValue.date, remarks: orderValue.remarks, login: userLogin.id}).then((response)=>{
-      // console.log(response);
        let value = response.data.order_id;
         
-        // console.log(value);
         nav("/orderpage/"+value);
       });
     

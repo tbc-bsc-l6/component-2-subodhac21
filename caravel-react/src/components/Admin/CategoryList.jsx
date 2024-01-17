@@ -5,11 +5,9 @@ const CategoryList = () => {
     const [category, setCategory] = useState([]);
     useEffect(()=>{
         axios.get("http://127.0.0.1:8000/api/get_categories").then((response)=>{
-            console.log(response);
             setCategory(response.data.allcat);
         })
     },[]);
-    console.log(category.length);
   return (
     <div>
 <div className="relative overflow-x-auto">

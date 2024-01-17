@@ -46,17 +46,14 @@ const Category = ({term, stopSearching}) => {
       let priceOption1 = [...priceOption];
       priceOption1.push(arr);
       setPriceOption(()=>priceOption1);
-      // console.log(priceOption);
     }
     else if(e.target.checked === false){
       // let index = priceOption.indexOf(e.target.value);
-      // console.log(index);
       let arr = e.target.value.split(",");
       let priceOption1 = priceOption.filter((p)=>{
         return p[1] != arr[1];
       })
       // let priceOption1 = priceOption.splice(index, 1);
-      // console.log(priceOption1);
       setPriceOption(priceOption1);
     }
   }
@@ -66,30 +63,25 @@ const Category = ({term, stopSearching}) => {
       let discountOption1 = [...discountOption];
       discountOption1.push(arr);
       setDiscountOption(()=>discountOption1);
-      // console.log(priceOption);
     }
     else if(e.target.checked === false){
       // let index = priceOption.indexOf(e.target.value);
-      // console.log(index);
       let arr = e.target.value.split(",");
       let discountOption1 = discountOption.filter((p)=>{
         return p[1] != arr[1];
       })
       // let priceOption1 = priceOption.splice(index, 1);
-      // console.log(priceOption1);
       setDiscountOption(discountOption1);
     }
   }
   useEffect(()=>{
     axios.get("http://127.0.0.1:8000/api/get_categories").then((response)=>{
-      // console.log(response);
       let arrPro = response.data.allcat;
       setCategory(arrPro);
   })
   },[])
   const getNewProducts = async() =>{
     axios.get("http://127.0.0.1:8000/api/get_products").then((response)=>{
-      // console.log(response);
       setNewPro(response.data.arr);
     })
   }
@@ -97,13 +89,11 @@ const Category = ({term, stopSearching}) => {
     getNewProducts();
   },[])
 
-// console.log(dateOption.length); 
   useEffect(()=>{
     if(term1 === ""){
       axios.post("http://127.0.0.1:8000/api/get_filter_products", {catid: catOption, price: priceOption.length>0 ? priceOption: null, discount: discountOption, date: dateOption, sortItem: sortItem}).then((response)=>{
         setNewPro(response.data.result);
         setLoader(false);
-        console.log(response);
       })
     }
     else{
@@ -111,7 +101,6 @@ const Category = ({term, stopSearching}) => {
         setNewPro(response.data.products);
         setTerm("");
         // setLoader(false);
-        // console.log(response);
       })
     }
   
@@ -344,7 +333,6 @@ const Category = ({term, stopSearching}) => {
         <div className='grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 items-center xl:grid-cols-2 mt-10 w-[78%] sm:w-[85%] m-auto lg:w-[90%] place-items-center'>
           {
             newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{
-                // console.log(id, description, name, image);
                   return <Product_card cat_name={cat_name} key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
             })
           }

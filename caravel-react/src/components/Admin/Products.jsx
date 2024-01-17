@@ -61,7 +61,7 @@ const Products = () => {
         }) 
       }
       catch(e){
-        console.log(e);
+        alert(e);
       }
 
       
@@ -76,7 +76,6 @@ const Products = () => {
     };
     if(cats.cname != "" && cats.cdesc){
       axios.post("http://127.0.0.1:8000/api/add_category", userdata).then((response)=>{
-        // console.log(response);
         setUpdateCat(!updateCat);
         setCatModal(false);
       })

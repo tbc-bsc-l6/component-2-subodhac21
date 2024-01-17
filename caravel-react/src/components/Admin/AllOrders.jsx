@@ -29,8 +29,6 @@ const AllOrders = () => {
 
         })
     }
-    console.log(statusDrop);
-    // console.log(changeHtml);
   return (
 
     <div>

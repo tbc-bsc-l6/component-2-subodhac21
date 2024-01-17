@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Add_user = () => {
     const nav = useNavigate();
+    const [status, setStatus] = useState("");
     const [userInfo, setUserInfo] = useState({
         fullname: "",
         email: "",
@@ -22,10 +23,19 @@ const Add_user = () => {
         if(userData.fullname != "" && userData.email != "" && userData.usertype != "" && userData.password != "" && userData.cpassword != ""){
             if(userData.password === userData.cpassword){
                 axios.post("http://127.0.0.1:8000/api/create_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-                    nav("/dashboard/users");
-                    // console.log(response);
+                    if(response.data.status != "failed")
+                        nav("/dashboard/users");
+                    else{
+                        setStatus(response.data.message);
+                    }
                 });
             }
+            else{
+                setStatus("Passwords do not match");
+            }
+        }
+        else{
+            setStatus("You cannot have empty fields!!");
         }
     }
   return (
@@ -34,6 +44,10 @@ const Add_user = () => {
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
                     <h1 className="mb-8 text-3xl text-center">Create Users</h1>
+                    {status != "" ? <div class="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4" role="alert">
+  <p class="font-bold">Be Warned</p>
+  <p>{status}</p>
+</div> : ""} 
                     <input 
                     onChange={(e)=>changeInfo(e)}
                     value={userInfo.fullname}

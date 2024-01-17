@@ -4,29 +4,32 @@ import { useDispatch } from 'react-redux';
 import { loginUser, logoutUser } from '../../auth/authSlice';
 import { useSelector } from 'react-redux'
 import axios from 'axios';
-
+import { Link } from 'react-router-dom';
 
 
 const UserProfilePage = () => {
 const [tab, setTab] = useState("1");
+const [itemPro, setItemPro] = useState([]);
+    const [masterPro, setMasterPro] = useState([]);
   const [editPage, setEditPage] = useState(false);
   const dispatch = useDispatch();
   const nav = useNavigate();
-  const logout = () =>{
-   
-    localStorage.setItem("loginItem", "");
-    dispatch(logoutUser({id: "", fullname: "", email: "", token: "", image: "", type: ""}));
-
-    nav("/");
-  }
   let loginData = useSelector((state)=>{
     return state.authReducer.signin[0];
-})
+  })
+ 
+  const logout = () =>{
+    localStorage.setItem("loginItem", "");
+    dispatch(logoutUser({id: "", fullname: "", email: "", token: "", image: "", type: ""}));
+    nav("/");
+  }
+ 
 
 useEffect(()=>{
     axios.get("http://127.0.0.1:8000/api/get_total_orders/"+loginData.id).then((response)=>{
+        setItemPro(response.data.orders);
+        // setMasterPro(response.data.orderItem);
         console.log(response);
-       
       });
 },[]) 
 
@@ -147,62 +150,53 @@ const changeTab = (e) =>{
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" className="px-6 py-3">
-                    Product name
+                    id
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Color
+                    order no
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Category
+                    address
                 </th>
                 <th scope="col" className="px-6 py-3">
-                    Price
+                delivery_date
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  status
+                </th>
+                <th>
+                  Remarks
                 </th>
             </tr>
         </thead>
         <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Apple MacBook Pro 17"
-                </th>
-                <td className="px-6 py-4">
-                    Silver
-                </td>
-                <td className="px-6 py-4">
-                    Laptop
-                </td>
-                <td className="px-6 py-4">
-                    $2999
-                </td>
-            </tr>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Microsoft Surface Pro
-                </th>
-                <td className="px-6 py-4">
-                    White
-                </td>
-                <td className="px-6 py-4">
-                    Laptop PC
-                </td>
-                <td className="px-6 py-4">
-                    $1999
-                </td>
-            </tr>
-            <tr className="bg-white dark:bg-gray-800">
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    Magic Mouse 2
-                </th>
-                <td className="px-6 py-4">
-                    Black
-                </td>
-                <td className="px-6 py-4">
-                    Accessories
-                </td>
-                <td className="px-6 py-4">
-                    $99
-                </td>
-            </tr>
+          {
+           itemPro.map((pro, id)=>{
+            
+            return (
+                <tr key={id} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <td className="px-6 py-4">
+                        <Link className="underline text-blue-500" to={"/orderpage/"+itemPro[id].id} >{id+1}</Link>
+                    </td>
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {itemPro[id].order_no}
+                    </th>
+                    <td className="px-6 py-4">
+                        {itemPro[id].address}
+                    </td>
+                    <td className="px-6 py-4">
+                        {itemPro[id].delivery_date}
+                    </td>
+                    <td className="px-6 py-4">
+                        {itemPro[id].status}
+                    </td>
+                    <td>
+                      {itemPro[id].remarks}
+                    </td>
+            </tr>)
+           
+})}
+
         </tbody>
     </table>
 </div>

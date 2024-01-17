@@ -56,8 +56,8 @@ class UserController extends Controller
         // ]);
         $val = $request->validate([
             'fullname'=>'required',
-            'email' => 'required|email',
-            'password'=>'required|confirmed'
+            'email' => 'required',
+            'password'=>'required'
         ]);
         $data = [
             'email' => $request->email,
@@ -65,9 +65,27 @@ class UserController extends Controller
         ];
         
         $emailToken = User::where('email', $request->email)->first();
+        if (!str_contains($request->email, '@') || !str_contains($request->email, '.')) {
+            return response([
+                'message'=> 'Email should  be a valid email',
+                'status' => 'failed'
+            ]);
+        }
+        if(strlen($request->password) < 6 || !preg_match('/[0-9]/', $request->password) || !preg_match('/[a-zA-Z]/', $request->password)){
+            return response([
+                'message'=> 'password should be at least of length 6 and contain a digit and an alphabet',
+                'status' => 'failed'
+            ]);
+        }
         if($emailToken){
             return response([
                 'message'=> 'Email already exists',
+                'status' => 'failed'
+            ]);
+        }
+        if($request->password_confirmation != $request->password){
+            return response([
+                'message'=> 'Password does not match',
                 'status' => 'failed'
             ]);
         }
@@ -152,18 +170,10 @@ class UserController extends Controller
 
     public function loginAdmin(Request $request){
         $val = $request->validate([
-            'email' => 'required|email|',
+            'email' => 'required|',
             'password' => 'required',
         ]);
-        // $data = [
-        //     "email" => $request->email,
-        //     'password'=> bcrypt($request->password)
-        // ];
-        // if (!Auth::attempt($data)) {
-        //     return response()->json([
-        //         'message' => 'Invalid login details'
-        //                    ], 401);
-        // }
+      
         $emailToken = User::where('email', $request->email)->first();
         if(!isset($emailToken)){
             return response([
@@ -177,6 +187,12 @@ class UserController extends Controller
         }
         else if($emailToken->usertype == "admin"){
             $pass = Hash::check($request->password, $emailToken->password);
+        }
+        else{
+            return response([
+                'message'=> "Login failed",
+                'status' => 'false',
+            ], 200);
         }
         
 
@@ -209,9 +225,20 @@ class UserController extends Controller
         ]);
     }
 
-    public function get_users_customer(){
+    public function get_users_customer(Request $request){
+        $perPage = $request->query('per_page', 10);
+
+        $users = User::where("usertype", 'customer')->paginate($perPage);
         return response([
-            'users'=> User::where("usertype", 'customer')->get()->toArray()
+            'users'=> $users->items(),
+            'pagination' => [
+                'total' => $users->total(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'from' => $users->firstItem(),
+                'to' => $users->lastItem(),
+            ],
         ]);
     }
 
@@ -226,6 +253,31 @@ class UserController extends Controller
         $email = $request->email;
         $usertype = $request->usertype;
         $password = bcrypt($request->password);
+        $emailToken = User::where('email', $request->email)->first();
+        if (!str_contains($request->email, '@') || !str_contains($request->email, '.')) {
+            return response([
+                'message'=> 'Email should  be a valid email',
+                'status' => 'failed'
+            ]);
+        }
+        if(strlen($request->password) < 6 || !preg_match('/[0-9]/', $request->password) || !preg_match('/[a-zA-Z]/', $request->password)){
+            return response([
+                'message'=> 'password should be at least of length 6 and contain a digit and an alphabet',
+                'status' => 'failed'
+            ]);
+        }
+        if($emailToken){
+            return response([
+                'message'=> 'Email already exists',
+                'status' => 'failed'
+            ]);
+        }
+        if($request->password_confirmation != $request->password){
+            return response([
+                'message'=> 'Password does not match',
+                'status' => 'failed'
+            ]);
+        }
         $result = User::create(['fullname'=> $fullname, 'email'=> $email, 'usertype'=> $usertype, 'password'=> $password]);
         return response([
             'status'=> true,

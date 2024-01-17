@@ -50,7 +50,6 @@ const Login = () => {
         // });
         if(response.data.status==="true"){
           // setStatus({status: response.data.message, color: "blue-700"});
-          console.log(response.data);
           dispatch(loginUser({id: response.data.id, fullname: response.data.fullname, email: logindetail.email, token: response.data.api_token, image: response.data.image, type: "customer"}));
           localStorage.setItem('loginItem', response.data.api_token);
           localStorage.setItem("cartItem", "");

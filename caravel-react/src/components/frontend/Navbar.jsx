@@ -15,7 +15,7 @@ import { loginUser } from '../../auth/authSlice';
 import  base_url from '../../auth/baseurl';
 
 
-const Navbar = ({setsidebar}) => {
+const Navbar = ({setsidebar, cartCount}) => {
   const [quantity, setQuantity] = useState(0);
     const userLogin = useSelector((state)=>{
       return state.authReducer.signin[0];
@@ -24,21 +24,18 @@ const Navbar = ({setsidebar}) => {
   let cartItems = useSelector((state)=>{
     return state.productReducer.cart_items;
   })
-  console.log(cartItems[0].items);
   useEffect(()=>{
     if(userLogin.id != ""){
       axios.post(base_url+"products_num_cart_by_id", {id: userLogin.id}).then((response)=>{
-        console.log(response);
         setQuantity(response.data.num);
       })
     }
     else{
       axios.post(base_url+"products_num_cart_by_token", {token: token}).then((response)=>{
-        console.log(response);
         setQuantity(response.data.num);
       })
     }
-  },[cartItems[0].items])
+  },[cartItems[0].items, cartCount])
   
   const dispatch = useDispatch();
   const [alert, setAlert] = useState(false);
@@ -46,7 +43,6 @@ const Navbar = ({setsidebar}) => {
     return state.authReducer.signin[0];
   })
   
-  // console.log(cartItems[0].items);
   useEffect(()=>{
     if(cartItems[0].items>0){
       setAlert(true);
@@ -55,7 +51,6 @@ const Navbar = ({setsidebar}) => {
       setAlert(false);
     },4000)
   },[cartItems[0].items])
-  // console.log(isLogin);
   // useEffect(()=>{
   //   let tokenInfilestorage = localStorage.getItem("loginItem");
   //   if(tokenInfilestorage != null){

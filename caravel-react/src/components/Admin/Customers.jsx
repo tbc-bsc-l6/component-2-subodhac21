@@ -1,34 +1,46 @@
 import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import ReactPaginate from "react-paginate";
 const Customers = () => {
     const [users, setUsers] = useState([]);
     const [status, setStatus] = useState(false);
     const localToken = localStorage.getItem("loginItem");
+    const [pagination, setPagination] = useState({});
     const [forbiddenPage, setForbiddenPage] = useState(false);
     const deleteUser = (e) =>{
         let id = e.target.dataset.id;
         axios.delete("http://127.0.0.1:8000/api/delete_user_customer/"+id, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-            // console.log(response);
             setStatus(true);
         });
     }
+       
     useEffect(()=>{
-        axios.get("http://127.0.0.1:8000/api/get_users_customer", {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-            console.log(response.data.error);
-            if(response.data.error === "Unauthorized"){
-                setForbiddenPage(true);
-                setUsers([]);
-            }
-            else{
-                let arr = response.data.users;
-                setUsers(arr);
-                setStatus(false);
-            }
-        })
-    },[status]);
+        fetchAllUsers();
+    },[status])
+
+    const fetchAllUsers = (page = 1) => {
+            axios.get(`http://127.0.0.1:8000/api/get_users_customer/?per_page=10&page=${page}`, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
+                if(response.data.error === "Unauthorized"){
+                    setForbiddenPage(true);
+                    setUsers([]);
+                }
+                else{
+                    let arr = response.data.users;
+                    setUsers(arr);
+                    console.log(response.data.pagination.total);
+                    setPagination(response.data.pagination);
+                    setStatus(false);
+                }
+            })
+    }
     
+
+    
+    const handlePageChange = (selectedPage) => {
+        fetchAllUsers(selectedPage.selected + 1);
+      };
+
   return (
 
     <div>
@@ -37,7 +49,7 @@ const Customers = () => {
       
 
 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-    {forbiddenPage===false ? (users.length === 0 ? <div>No users found</div> : <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    {forbiddenPage===false ? (users.length === 0 ? <div>No users found</div> :<div className='pb-12'> <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" className="px-6 py-3">
@@ -90,7 +102,26 @@ const Customers = () => {
            
             }
         </tbody>
-    </table>) : (<section className="bg-white dark:bg-gray-900">
+    </table>
+    {pagination.total > 0 && (
+        <div className="pagination">
+          <ReactPaginate
+            previousLabel="Previous"
+            nextLabel="Next"
+            breakLabel="..."
+            pageCount={pagination.last_page}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName="pagination"
+            subContainerClassName="pages pagination"
+            activeClassName="active"
+          />
+        </div>
+      )}
+    </div>
+    )
+     : (<section className="bg-white dark:bg-gray-900">
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center">
             <h1 className="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500">403</h1>

@@ -3,7 +3,6 @@ import Paypal from './Paypal';
 
 const Payment = ({totalprice, id}) => {
     const [checkout, setCheckout] = useState(false);
-// console.log(totalprice);
   return (
     checkout ? <Paypal price={totalprice} id={id}/> : 
     <div className=''>

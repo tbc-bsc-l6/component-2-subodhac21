@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { add_cart, add_cart_item, add_message } from '../../auth/productSlice';
 import { useNavigate } from 'react-router-dom';
 
-const Product_detail = () => {
+const Product_detail = ({}) => {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [singlePro, setSinglePro] = useState({});
@@ -19,7 +19,6 @@ const Product_detail = () => {
     const userLogin = useSelector((state)=>{
         return state.authReducer.signin[0];
     })
-    console.log(userLogin);
     let cartToken = localStorage.getItem('cartItem');
     useEffect(()=>{
         setToken(cartToken);
@@ -31,9 +30,7 @@ const Product_detail = () => {
         // dispatch(add_message({mess: "adding"}));
         if(userLogin.fullname != ""){
             axios.post("http://127.0.0.1:8000/api/add_product_to_cart_named", {pro_id: id, quantity: quant, cust_id: userLogin.id, add: quant}).then((response)=>{
-                // console.log(response);
                 if(response.data.repeat == true){
-                    // setLoading(false);
                     dispatch(add_cart({'items': 0}));
                     dispatch(add_message({mess: "added_success"}));
                   }
@@ -148,7 +145,7 @@ const Product_detail = () => {
                 
             //   }
             } catch (error) {
-              console.error("Error fetching product details:", error);
+              alert("Error fetching product details:", error);
               // Handle error if needed
             }
         //   }
@@ -163,7 +160,6 @@ const Product_detail = () => {
         
       }, [id]);
 
-      console.log(singlePro);
   return (
       <section className="overflow-hidden bg-white py-11 font-poppins dark:bg-gray-800 z-12">
         <div className="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
@@ -171,14 +167,14 @@ const Product_detail = () => {
                 <div className="w-full px-4 md:w-1/2 ">
                     <div className="sticky top-0 z-50 overflow-hidden ">
                         <div className="relative mb-6 lg:mb-10 lg:h-2/4 ">
-                            <img src={`http://127.0.0.1:8000/images/${singlePro.pimage}`} alt=""
+                            <img src={singlePro.pimage? singlePro.pimage : `http://127.0.0.1:8000/images/${singlePro.pimage}`} alt=""
                                 className="object-cover w-full lg:h-full "/>
                         </div>
                         <div className="flex-wrap hidden md:flex ">
                             <div className="w-1/2 p-2 sm:w-1/4">
                                 <a href="#"
                                     className="block border border-blue-300 dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
-                                    <img src={`http://127.0.0.1:8000/images/${singlePro.pimage}`} alt=""
+                                    <img src={singlePro.pimage? singlePro.pimage : `http://127.0.0.1:8000/images/${singlePro.pimage}`} alt=""
                                         className="object-cover w-full lg:h-20"/>
                                 </a>
                             </div>

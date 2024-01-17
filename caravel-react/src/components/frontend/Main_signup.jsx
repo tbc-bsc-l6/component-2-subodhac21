@@ -48,16 +48,20 @@ const Main_signup = () => {
         if(fullname != "" &&  email != "" && password != "" && cpassword != ""){
           
             axios.post("http://127.0.0.1:8000/api/register", userData).then((response) => {
-                // console.log(response);
-                dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
-                localStorage.setItem('loginItem', response.data.api_token);
-                localStorage.setItem("cartItem", "");
-                setFullname("");
-                setEmail("");
-                setPassword("");
-                setCpassword("");
-                setStatus({status: response.data.message, color: "blue-700"});
-                navigate("/");
+                if(response.data.status != "failed"){
+                    dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
+                    localStorage.setItem('loginItem', response.data.api_token);
+                    localStorage.setItem("cartItem", "");
+                    setFullname("");
+                    setEmail("");
+                    setPassword("");
+                    setCpassword("");
+                    
+                    // navigate("/");
+                }
+                else{
+                    setStatus({status: response.data.message, color: "blue-700"});
+                }
                 // navigate("/signin");
             });
 
@@ -67,14 +71,20 @@ const Main_signup = () => {
             
           
         }
-        // console.log(status);
     }
   return (
     isLogin.token != "" ? <Navigate to="/"/> :<form onSubmit={(e)=>submitForm(e)} className='mt-0 mb-8'>
+       
       <div className="bg-grey-lighter min-h-[700px] flex flex-col">
             <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
                 <div className="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-        <p className={`w-[100%] mx-auto text-center text-lg mb-4 text-${status.color} `} >{status.status}</p>
+                {status.status != "" ? 
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+  <strong className="font-bold">Holy smokes!  </strong>
+  <span className="block sm:inline">{status.status}</span>
+</div> : ""
+}
+        
                     <h1 className="mb-8 text-3xl text-center">Sign up</h1>
                     <input 
                         type="text"

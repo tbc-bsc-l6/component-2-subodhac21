@@ -27,7 +27,6 @@ const ResetPass = () => {
     const submitUser = (e) =>{
         e.preventDefault();
         let userData = {...userInfo, id: id};
-        console.log(userData);
         if(userData.oldpassword != "" && userData.cpassword != "" && userData.newpassword != ""){
             if(userData.oldpassword === userData.cpassword){
                 axios.put("http://127.0.0.1:8000/api/reset_user_admin", userData, {headers: {"Authorization": `${localToken}`}}).then((response)=>{

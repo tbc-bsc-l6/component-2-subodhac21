@@ -11,13 +11,11 @@ const Users = () => {
     const deleteUser = (e) =>{
         let id = e.target.dataset.id;
         axios.delete("http://127.0.0.1:8000/api/delete_user_admin/"+id, {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-            // console.log(response);
             setStatus(true);
         });
     }
     useEffect(()=>{
         axios.get("http://127.0.0.1:8000/api/get_users_admin", {headers: {"Authorization": `${localToken}`}}).then((response)=>{
-            // console.log(response);
             if(response.data.error === "Unauthorized"){
                 setForbiddenPage(true);
                 setUsers([]);

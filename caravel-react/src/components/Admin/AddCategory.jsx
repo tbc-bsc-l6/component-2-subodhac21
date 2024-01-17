@@ -15,7 +15,6 @@ const AddCategory = () => {
         };
         if(cats.cname != "" && cats.cdesc){
           axios.post("http://127.0.0.1:8000/api/add_category", userdata).then((response)=>{
-            // console.log(response);
             nav("/dashboard/categorylist");
           })
         }

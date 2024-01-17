@@ -16,7 +16,6 @@ const ContactUsPage = () => {
     const sendMessage = () =>{
         if(info.name != "" && info.email != "" && info.message != ""){
             axios.post("http://127.0.0.1:8000/api/contactMe", info).then((response)=>{
-                console.log(response);
             })
         }
     }

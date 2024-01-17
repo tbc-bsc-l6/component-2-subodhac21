@@ -2,7 +2,7 @@ import React from 'react'
 import Product_detail from '../components/frontend/Product_detail'
 import Navbar from '../components/frontend/Navbar'
 import Footer from '../components/frontend/Footer'
-const Detail = () => {
+const Detail = ({}) => {
   return (
     <>
     {/* <div className='font-[poppins] h-screen'>
