@@ -112,6 +112,7 @@ class UserController extends Controller
                 'message'=>"User created successfully",
                 'fullname'=>$request->fullname,
                 'email'=>$request->email,
+                'id'=> $emailToken->id,
                 'image'=>'p1.jpg',
                 'api_token' => $token
                 // 'token'=>$token,

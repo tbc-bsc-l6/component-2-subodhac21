@@ -332,9 +332,9 @@ const Category = ({term, stopSearching}) => {
            
         <div className='grid grid-cols-1 xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 items-center xl:grid-cols-2 mt-10 w-[78%] sm:w-[85%] m-auto lg:w-[90%] place-items-center'>
           {
-            newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{
+            newPro.length > 0 ? newPro.map(({id, category_id, created_at, description, discount_id, image, name, price, cat_name})=>{
                   return <Product_card cat_name={cat_name} key={id} id={id} category_id={category_id} date={created_at} description={description} discount_id={discount_id} image={image} name={name} price={price}/>
-            })
+            }) : "no product found"
           }
             
     

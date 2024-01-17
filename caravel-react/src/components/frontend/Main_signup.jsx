@@ -49,7 +49,7 @@ const Main_signup = () => {
           
             axios.post("http://127.0.0.1:8000/api/register", userData).then((response) => {
                 if(response.data.status != "failed"){
-                    dispatch(loginUser({fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
+                    dispatch(loginUser({id: response.data.id,fullname: fullname, email: email, token: response.data.api_token, image: response.data.image, type: "customer"}));
                     localStorage.setItem('loginItem', response.data.api_token);
                     localStorage.setItem("cartItem", "");
                     setFullname("");

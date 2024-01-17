@@ -31,7 +31,7 @@ const Product_card = (props) => {
           else{
             // setLoading(false);
             dispatch(add_cart({'items': 1}));
-            props.cartCount(1);
+            // props.cartCount(1);
             dispatch(add_cart_item({'items':[response.data.result[0]], 'cart': [response.data.cart_pr[0]], 'category': [response.data.cart_pr[0]]}));
             // nav("/cartpage");
             dispatch(add_message({mess: "added_success"}));
